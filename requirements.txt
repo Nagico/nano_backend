@@ -1,0 +1,9 @@
+Django
+djangorestframework
+djangorestframework_simplejwt
+drf_extensions
+django-filter
+pillow
+django-cors-headers
+mysqlclient
+django-redis
