@@ -1,9 +1,11 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
-from rest_framework_simplejwt.serializers import PasswordField
+from rest_framework_simplejwt.serializers import PasswordField, TokenObtainPairSerializer
+from rest_framework_simplejwt.settings import api_settings
 
 from .models import User
+from nano_backend.utils.crypto import Crypto
 
 
 class UserSerializer(ModelSerializer):
@@ -44,10 +46,39 @@ class UserSerializer(ModelSerializer):
         :param attrs:
         :return:
         """
-        if attrs.get('password') != attrs.get('password2'):
+        # rsa 解密
+        c = Crypto()
+        password = c.decrypt(attrs['password'])
+        password2 = c.decrypt(attrs['password2'])
+
+        if password != password2:
             raise serializers.ValidationError(detail='Password does not match', code='password_not_match')
 
-        attrs['password'] = make_password(attrs['password'])
+        attrs['password'] = make_password(password)
         attrs.pop('password2')  # 删除密码2
 
         return attrs
+
+
+class LoginTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """
+    登录获取token序列化器
+    """
+    def validate_password(self, value):
+        """
+        rsa 解密
+        """
+        c = Crypto()
+        return c.decrypt(value)
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        refresh = self.get_token(self.user)
+
+        data['id'] = self.user.id
+        data['username'] = self.user.username
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
+
+        return data
