@@ -11,6 +11,7 @@ class User(AbstractUser):
 
     avatar = models.ImageField(upload_to='avatar', default='avatar/default.jpg', verbose_name='头像',
                                storage=AvatarStorage)
+    mobile = models.CharField(max_length=11, unique=True, verbose_name='手机号')
 
     collection_anime = models.ManyToManyField('animes.Anime', related_name='collection_user', blank=True,
                                               verbose_name='Anime收藏')

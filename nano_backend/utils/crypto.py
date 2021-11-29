@@ -47,7 +47,7 @@ class Crypto:
 
 if __name__ == '__main__':
     c = Crypto('../../keys/pub.key', '../../keys/pri.key')
-    text = 'hello world'
+    text = '123456789'
     print(c.encrypt(text))
     print(c.encrypt(text))
     print(c.decrypt(c.encrypt(text)))

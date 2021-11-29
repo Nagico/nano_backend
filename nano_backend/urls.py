@@ -12,6 +12,7 @@ from users import views as user_views
 urlpatterns = [
     path('admin/', admin.site.urls),  # admin 后台管理
     path('user/', include('users.urls')),  # 用户相关
+    path('', include('verifications.urls')),  # 验证模块
     url(r'^media/(?P<path>.*)', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
 
