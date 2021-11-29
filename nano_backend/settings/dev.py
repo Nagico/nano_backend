@@ -52,9 +52,10 @@ INSTALLED_APPS = [
     'corsheaders',  # CORS 跨域
     'rest_framework_simplejwt',  # JWT
 
-    'users',
-    'animes',
-    'comments',
+    'users',  # 用户
+    'animes',  # 番剧
+    'places',  # 地点
+    'photos',  # 照片
 ]
 
 MIDDLEWARE = [
@@ -214,15 +215,15 @@ LOGGING = {
 # DRF
 REST_FRAMEWORK = {
     # 异常处理
-    'EXCEPTION_HANDLER': 'nano.utils.exceptions.exception_handler',
+    'EXCEPTION_HANDLER': 'nano_backend.utils.exceptions.exception_handler',
     # 认证配置
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    # 全局认证 优先级高于试图类中的配置 login view中，进行用户验证时
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
+    # # 全局认证 优先级高于试图类中的配置 login view中，进行用户验证时
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+    # ],
 }
 
 # 修改 Django 认证用户模型类(必须以 应用名.模型 格式导入)

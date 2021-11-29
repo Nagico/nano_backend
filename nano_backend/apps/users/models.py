@@ -12,7 +12,10 @@ class User(AbstractUser):
     avatar = models.ImageField(upload_to='avatar', default='avatar/default.jpg', verbose_name='头像',
                                storage=AvatarStorage)
 
-    collection = models.ManyToManyField('animes.Anime', related_name='collection', blank=True, verbose_name='收藏')
+    collection_anime = models.ManyToManyField('animes.Anime', related_name='collection_user', blank=True,
+                                              verbose_name='Anime收藏')
+    collection_place = models.ManyToManyField('places.Place', related_name='collection_user', blank=True,
+                                              verbose_name='Place收藏')
 
     class Meta:
         app_label = 'users'

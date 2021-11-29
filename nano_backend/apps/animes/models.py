@@ -1,31 +1,34 @@
 from django.db import models
 
+from nano_backend.utils.choices import StatusChoice
+
 
 class Anime(models.Model):
     """
-    Anime模型
+    番剧模型
     """
     title = models.CharField(max_length=100, unique=True, verbose_name='标题')
     title_cn = models.CharField(max_length=100, blank=True, verbose_name='中文标题')
 
-    description = models.TextField(verbose_name='简介')
+    description = models.TextField(blank=True, null=True, verbose_name='简介')
     image = models.ImageField(upload_to='animes', verbose_name='图片')
 
-    score_1 = models.IntegerField(default=0, verbose_name='1分')
-    score_2 = models.IntegerField(default=0, verbose_name='2分')
-    score_3 = models.IntegerField(default=0, verbose_name='3分')
-    score_4 = models.IntegerField(default=0, verbose_name='4分')
-    score_5 = models.IntegerField(default=0, verbose_name='5分')
-    score_6 = models.IntegerField(default=0, verbose_name='6分')
-    score_7 = models.IntegerField(default=0, verbose_name='7分')
-    score_8 = models.IntegerField(default=0, verbose_name='8分')
-    score_9 = models.IntegerField(default=0, verbose_name='9分')
-    score_10 = models.IntegerField(default=0, verbose_name='10分')
+    place = models.ManyToManyField('places.Place', related_name='anime_related', blank=True, verbose_name='相关地点')
 
-    collection_num = models.IntegerField(default=0, verbose_name='收藏数')
+    create_user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='anime_create_user',
+                                    verbose_name='创建者')
+    contributor = models.ManyToManyField('users.User', related_name='anime_contributor', verbose_name='贡献者')
+
+    status = models.IntegerField(choices=StatusChoice.choices, default=StatusChoice.UNPUBLISHED, verbose_name='状态')
 
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     update_time = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        app_label = 'animes'
+        db_table = 'tb_anime'
+        verbose_name = '番剧信息'
+        verbose_name_plural = verbose_name

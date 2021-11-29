@@ -1,16 +1,22 @@
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
+from rest_framework_simplejwt.serializers import PasswordField
 
 from .models import User
 
 
-class UserInfoSerializer(ModelSerializer):
+class UserSerializer(ModelSerializer):
     """
     用户信息序列化器（所有信息）
     """
     class Meta:
         model = User
-        exclude = ['password', 'is_active', 'is_superuser', 'is_staff', 'date_joined', 'last_login']
+        exclude = ['is_active', 'is_superuser', 'is_staff', 'date_joined', 'last_login',
+                   'first_name', 'last_name', 'groups', 'user_permissions']
+
+    password = PasswordField(write_only=True)
+    password2 = PasswordField(write_only=True)
 
     def validate_avatar(self, value):
         """
@@ -32,12 +38,16 @@ class UserInfoSerializer(ModelSerializer):
 
         return value
 
+    def validate(self, attrs):
+        """
+        联合校验密码
+        :param attrs:
+        :return:
+        """
+        if attrs.get('password') != attrs.get('password2'):
+            raise serializers.ValidationError(detail='Password does not match', code='password_not_match')
 
-class UserIntentionSerializer(ModelSerializer):
-    """
-    用户求职意向序列化器
-    """
+        attrs['password'] = make_password(attrs['password'])
+        attrs.pop('password2')  # 删除密码2
 
-    class Meta:
-        model = UserInfo
-        fields = ['uid', 'intention']
+        return attrs
