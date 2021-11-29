@@ -11,12 +11,16 @@ class Anime(models.Model):
     description = models.TextField(verbose_name='简介')
     image = models.ImageField(upload_to='animes', verbose_name='图片')
 
-    score_0 = models.IntegerField(default=0, verbose_name='0分')
     score_1 = models.IntegerField(default=0, verbose_name='1分')
     score_2 = models.IntegerField(default=0, verbose_name='2分')
     score_3 = models.IntegerField(default=0, verbose_name='3分')
     score_4 = models.IntegerField(default=0, verbose_name='4分')
     score_5 = models.IntegerField(default=0, verbose_name='5分')
+    score_6 = models.IntegerField(default=0, verbose_name='6分')
+    score_7 = models.IntegerField(default=0, verbose_name='7分')
+    score_8 = models.IntegerField(default=0, verbose_name='8分')
+    score_9 = models.IntegerField(default=0, verbose_name='9分')
+    score_10 = models.IntegerField(default=0, verbose_name='10分')
 
     collection_num = models.IntegerField(default=0, verbose_name='收藏数')
 

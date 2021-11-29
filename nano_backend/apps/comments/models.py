@@ -11,6 +11,8 @@ class Comment(models.Model):
     article = models.ForeignKey('animes.Anime', on_delete=models.CASCADE, verbose_name='评论对象')
     reply = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, verbose_name='回复')
 
+    like = models.ManyToManyField('users.User', related_name='like_comments', blank=True, verbose_name='点赞')
+
     is_read = models.BooleanField(default=False, verbose_name='是否已读')
     is_deleted = models.BooleanField(default=False, verbose_name='是否已删除')
 
