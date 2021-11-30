@@ -49,16 +49,17 @@ class UserSerializer(serializers.ModelSerializer):
         :param attrs:
         :return:
         """
-        # rsa 解密
-        c = Crypto()
-        password = c.decrypt(attrs['password'])
-        password2 = c.decrypt(attrs['password2'])
+        if hasattr(attrs, 'password') and hasattr(attrs, 'password2'):
+            # rsa 解密
+            c = Crypto()
+            password = c.decrypt(attrs['password'])
+            password2 = c.decrypt(attrs['password2'])
 
-        if password != password2:
-            raise serializers.ValidationError(detail='Password does not match', code='password_not_match')
+            if password != password2:
+                raise serializers.ValidationError(detail='Password does not match', code='password_not_match')
 
-        attrs['password'] = make_password(password)
-        attrs.pop('password2')  # 删除密码2
+            attrs['password'] = make_password(password)
+            attrs.pop('password2')  # 删除密码2
 
         return attrs
 

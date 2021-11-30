@@ -1,6 +1,7 @@
 import logging
 
 from django.core.files.uploadhandler import MemoryFileUploadHandler
+from rest_framework import serializers
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import CreateAPIView
 from rest_framework.mixins import DestroyModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
@@ -29,6 +30,26 @@ class UserInfoViewSet(RetrieveModelMixin,
     # permission_classes = [IsAuthenticated]  # 仅登录用户可访问个人信息
     permission_classes = [AllowAny]  # 测试使用
 
+    def validate_avatar(self, value):
+        """
+        头像检测
+        """
+        if not value:  # 未找到头像文件
+            return 'media/avatar/default.jpg'
+
+        if value.content_type not in ['image/jpeg', 'image/png', 'image/gif']:  # 文件类型不正确
+            raise serializers.ValidationError(detail='Avatar is not a image', code='avatar_not_image')
+
+        if value.size > 1024 * 1024 * 2:  # 头像文件大于2M
+            raise serializers.ValidationError(detail='Avatar is larger than 2MB', code='avatar_too_large')
+        if value.size < 1024:  # 头像文件小于1KB
+            raise serializers.ValidationError(detail='Avatar is smaller than 1KB', code='avatar_too_small')
+
+        if self.instance.avatar != 'media/avatar/default.jpg':  # 已存在头像文件
+            self.instance.avatar.delete()  # 删除原头像文件
+
+        return value
+
     def get_object(self):
         """
         重写对象获取逻辑，获取当前登录用户的信息
@@ -42,12 +63,11 @@ class UserInfoViewSet(RetrieveModelMixin,
 
     def update(self, request, *args, **kwargs):
         """
-        重写update逻辑，增加自动用户激活
+        重写update逻辑
         """
         request.upload_handlers = [MemoryFileUploadHandler(request)]  # 头像默认使用内存上传
-        partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
