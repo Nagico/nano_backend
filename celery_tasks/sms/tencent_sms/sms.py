@@ -20,8 +20,12 @@ def send(mobile, data):
         with open(path, 'r') as f:
             secretID = f.readline()[:-1]
             secretKey = f.readline()[:-1]
-
         cred = credential.Credential(secretID, secretKey)
+
+        # cred = credential.Credential(
+        #         os.environ.get("TENCENT_SMS_SECRET_ID"),
+        #         os.environ.get("TENCENT_SMS_SECRET_KEY")
+        #     )
 
         # 实例化一个http选项，可选的，没有特殊需求可以跳过。
         httpProfile = HttpProfile()

@@ -14,4 +14,4 @@ def send_sms_code(mobile, sms_code):
     :param sms_code: 验证码
 
     """
-    sms.send(mobile, [sms_code, constants.SMS_CODE_REDIS_EXPIRES // 60])
+    sms.send(mobile, [sms_code, str(constants.SMS_CODE_REDIS_EXPIRES // 60)])
