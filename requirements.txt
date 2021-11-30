@@ -2,6 +2,7 @@ Django
 djangorestframework
 djangorestframework_simplejwt
 drf_extensions
+drf-spectacular
 django-filter
 pillow
 django-cors-headers

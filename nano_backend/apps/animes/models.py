@@ -11,7 +11,8 @@ class Anime(models.Model):
     title_cn = models.CharField(max_length=100, blank=True, verbose_name='中文标题')
 
     description = models.TextField(blank=True, null=True, verbose_name='简介')
-    image = models.ImageField(upload_to='animes', verbose_name='图片')
+    cover = models.ImageField(upload_to='animes/cover', verbose_name='封面图片')
+    cover_small = models.ImageField(upload_to='animes/cover_small', verbose_name='封面图片(小)')
 
     place = models.ManyToManyField('places.Place', related_name='anime_related', blank=True, verbose_name='相关地点')
 

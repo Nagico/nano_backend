@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework',  # DRF
     'corsheaders',  # CORS 跨域
     'rest_framework_simplejwt',  # JWT
+    'drf_spectacular',  # api 文档
 
     'users',  # 用户
     'animes',  # 番剧
@@ -224,6 +225,7 @@ REST_FRAMEWORK = {
     # 'DEFAULT_AUTHENTICATION_CLASSES': [
     #     'rest_framework_simplejwt.authentication.JWTAuthentication',
     # ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  # api 默认文档
 }
 
 # 修改 Django 认证用户模型类(必须以 应用名.模型 格式导入)
@@ -253,3 +255,11 @@ AVATAR_BASE_WIDTH = 400
 
 # 自定义用户类
 AUTH_USER_MODEL = 'users.User'
+
+# API 文档设置
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'nano API接口文档',
+    'DESCRIPTION': '项目详情介绍',
+    'VERSION': '1.0.0',
+    # OTHER SETTINGS
+}
