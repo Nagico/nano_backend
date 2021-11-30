@@ -234,15 +234,17 @@ REST_FRAMEWORK = {
 # CORS
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8080',
-    'http://localhost:8080'
+    'http://localhost:8080',
+    'https://127.0.0.1:8080',
+    'https://localhost:8080'
 )
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
 
 
 # JWT(new)
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=10),
     'ALGORITHM': 'HS256',
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION'
