@@ -13,13 +13,14 @@ class Place(models.Model):
     longitude = models.FloatField(default=0, verbose_name='经度')
     description = models.TextField(blank=True, null=True,  verbose_name='地点描述')
 
-    photo = models.ManyToManyField('photos.Photo', blank=True, related_name='place_related', verbose_name='相关图片')
+    anime_id = models.ForeignKey('animes.Anime', on_delete=models.CASCADE, related='photos', verbose_name='动画')
 
     create_user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='place_create_user',
                                     verbose_name='创建者')
     contributor = models.ManyToManyField('users.User', related_name='place_contributor', verbose_name='贡献者')
 
-    status = models.IntegerField(choices=StatusChoice.choices, default=StatusChoice.UNPUBLISHED, verbose_name='状态')
+    is_public = models.BooleanField(default=False, verbose_name='是否公开')
+    is_approved = models.BooleanField(default=False, verbose_name='是否通过审核')
 
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
