@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 import users.models
+from places.serializers import PlaceInfoSerializer
 from .models import Anime
 
 
@@ -19,3 +20,11 @@ class AnimeSerializer(serializers.ModelSerializer):
         attrs['contributor'] = [users.models.User.objects.get(pk=1)]
 
         return attrs
+
+
+class AnimePlaceSerializer(serializers.ModelSerializer):
+    place = PlaceInfoSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Anime
+        fields = ['place']
