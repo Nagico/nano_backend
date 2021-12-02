@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from nano_backend.utils.choices import StatusChoice
+from places.models import Place
 from .models import Anime
 from .serializers import AnimeSerializer, AnimePlaceSerializer
 
@@ -35,6 +36,7 @@ class AnimeViewSet(ModelViewSet):
         place_id = request.data.get('place_id')  # 传入 pk
         if request.method == 'POST':  # 添加
             anime.place.add(place_id)
+            anime.contributor.add(Place.objects.get(pk=place_id).create_user.id)
             return Response(self.get_place_info(anime), status=status.HTTP_201_CREATED)
         elif request.method == 'DELETE':  # 删除
             anime.place.remove(place_id)
