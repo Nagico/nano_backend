@@ -1,8 +1,6 @@
-from rest_framework.serializers import ModelSerializer, ListSerializer
+from rest_framework.serializers import ModelSerializer
 
 import users.models
-from nano_backend.utils.choices import StatusChoice
-from photos.serializers import PhotoInfoSerializer
 from .models import Place
 
 

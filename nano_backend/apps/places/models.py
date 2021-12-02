@@ -13,7 +13,7 @@ class Place(models.Model):
     longitude = models.FloatField(default=0, verbose_name='经度')
     description = models.TextField(blank=True, null=True,  verbose_name='地点描述')
 
-    anime_id = models.ForeignKey('animes.Anime', on_delete=models.CASCADE, related='places', verbose_name='动画')
+    anime_id = models.ForeignKey('animes.Anime', on_delete=models.CASCADE, related_name='places', verbose_name='动画')
 
     create_user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='place_create_user',
                                     verbose_name='创建者')

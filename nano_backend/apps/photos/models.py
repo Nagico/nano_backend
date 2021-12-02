@@ -12,8 +12,8 @@ class Photo(models.Model):
     image = models.ImageField(upload_to='photos/%Y/%m/%d/')
     type = models.IntegerField(choices=ImageTypeChoice.choices, default=ImageTypeChoice.REAL, verbose_name='照片类型')
 
-    anime_id = models.ForeignKey('animes.Anime', on_delete=models.CASCADE, related='photos', verbose_name='动画')
-    place_id = models.ForeignKey('places.Place', on_delete=models.CASCADE, related='photos', verbose_name='地点')
+    anime_id = models.ForeignKey('animes.Anime', on_delete=models.CASCADE, related_name='photos', verbose_name='动画')
+    place_id = models.ForeignKey('places.Place', on_delete=models.CASCADE, related_name='photos', verbose_name='地点')
 
     create_user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='photo_create_user',
                                     verbose_name='创建者')
