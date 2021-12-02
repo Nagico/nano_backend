@@ -18,4 +18,5 @@ class AnimeViewSet(ModelViewSet):
         """
         支持部分更新
         """
-        self.partial_update(request, *args, **kwargs)
+        kwargs['partial'] = True
+        return super().update(request, *args, **kwargs)
