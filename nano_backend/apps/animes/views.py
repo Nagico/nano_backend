@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
+from django.db.models import Q
 
-from nano_backend.utils.choices import StatusChoice
+from users.models import User
 from .models import Anime
 from .serializers import AnimeSerializer
 
@@ -13,7 +14,7 @@ class AnimeViewSet(ModelViewSet):
     serializer_class = AnimeSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(status=StatusChoice.PASS)
+        return self.queryset.filter(Q(is_approved=True) | Q(create_user=User.objects.get(pk=1)))
 
     def update(self, request, *args, **kwargs):
         """

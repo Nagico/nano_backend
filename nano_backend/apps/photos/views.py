@@ -1,12 +1,12 @@
 from rest_framework.viewsets import ModelViewSet
 
 from .models import Photo
-from .serializers import PhotoSerializer
+from .serializers import PhotoDetailSerializer
 
 
 class PhotoViewSet(ModelViewSet):
     queryset = Photo.objects.all()
-    serializer_class = PhotoSerializer
+    serializer_class = PhotoDetailSerializer
 
     def update(self, request, *args, **kwargs):
         """

@@ -1,10 +1,15 @@
 from rest_framework import serializers
 
 import users.models
+from photos.serializers import PhotoLimitSerializer
+from places.serializers import PlaceLimitSerializer
 from .models import Anime
 
 
 class AnimeSerializer(serializers.ModelSerializer):
+    places = PlaceLimitSerializer(many=True, read_only=True)
+    photos = PhotoLimitSerializer(many=True, read_only=True)
+
     class Meta:
         model = Anime
         fields = '__all__'

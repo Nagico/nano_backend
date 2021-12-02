@@ -1,13 +1,14 @@
+from django.db.models import Q
 from rest_framework.viewsets import ModelViewSet
 
-from nano_backend.utils.choices import StatusChoice
+from users.models import User
 from .models import Place
-from .serializers import PlaceSerializer
+from .serializers import PlaceDetailsSerializer
 
 
 class PlaceViewSet(ModelViewSet):
     queryset = Place.objects.all()
-    serializer_class = PlaceSerializer
+    serializer_class = PlaceDetailsSerializer
 
     def update(self, request, *args, **kwargs):
         """
@@ -17,5 +18,5 @@ class PlaceViewSet(ModelViewSet):
         return super().update(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.queryset.filter(status=StatusChoice.PASS)
+        return self.queryset.filter(Q(is_approved=True) | Q(create_user=User.objects.get(pk=1)))
 

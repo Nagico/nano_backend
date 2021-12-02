@@ -14,8 +14,6 @@ class Anime(models.Model):
     cover = models.ImageField(upload_to='animes/cover', verbose_name='封面图片')
     cover_small = models.ImageField(upload_to='animes/cover_small', verbose_name='封面图片(小)')
 
-    place = models.ManyToManyField('places.Place', related_name='anime_related', blank=True, verbose_name='相关地点')
-
     create_user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='anime_create_user',
                                     verbose_name='创建者')
     contributor = models.ManyToManyField('users.User', related_name='anime_contributor', verbose_name='贡献者')
