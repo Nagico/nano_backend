@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 
+from nano_backend.utils.choices import StatusChoice
 from .models import Place
 from .serializers import PlaceSerializer
 
@@ -14,3 +15,6 @@ class PlaceViewSet(ModelViewSet):
         """
         kwargs['partial'] = True
         return super().update(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.queryset.filter(status=StatusChoice.PASS)

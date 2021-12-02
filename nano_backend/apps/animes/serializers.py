@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 import users.models
+from nano_backend.utils.choices import StatusChoice
 from places.serializers import PlaceInfoSerializer
 from .models import Anime
 
@@ -18,6 +19,7 @@ class AnimeSerializer(serializers.ModelSerializer):
         # attrs['contributor'] = self.context['request'].user
         attrs['create_user'] = users.models.User.objects.get(pk=1)
         attrs['contributor'] = [users.models.User.objects.get(pk=1)]
+        attrs['status'] = StatusChoice.PENDING
 
         return attrs
 
