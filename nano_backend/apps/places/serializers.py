@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer, ListSerializer
 
 import users.models
 from nano_backend.utils.choices import StatusChoice
+from photos.serializers import PhotoInfoSerializer
 from .models import Place
 
 
@@ -31,3 +32,11 @@ class PlaceInfoSerializer(ModelSerializer):
         model = Place
         list_serializer_class = PlaceInfoList
         fields = ['id', 'name']
+
+
+class PlacePhotoSerializer(ModelSerializer):
+    photo = PhotoInfoSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Place
+        fields = ['photo']
