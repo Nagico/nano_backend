@@ -14,7 +14,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),  # admin 后台管理
     path('user/', include('users.urls')),  # 用户相关
     path('', include('verifications.urls')),  # 验证模块
-    path('anime/',include('animes.urls')),  # 番剧
+    path('anime/', include('animes.urls')),  # 番剧
     path('place/', include('places.urls')),  # 地点
     path('photo/', include('photos.urls')),  # 照片
 

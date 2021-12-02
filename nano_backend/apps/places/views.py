@@ -1,10 +1,14 @@
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework_simplejwt.exceptions import AuthenticationFailed
 
 from animes.models import Anime
-from users.models import User
+from users.models import User, UserPlaceCollection
 from .filters import PlaceFilter
 from .models import Place
 from .serializers import PlaceDetailsSerializer
@@ -54,3 +58,27 @@ class PlaceViewSet(ModelViewSet):
     def perform_update(self, serializer):
         self.update_contributor()
         serializer.save()
+
+    @action(methods=['post', 'delete'], detail=True)
+    def collection(self, request, pk=None):
+        """
+        place 收藏
+        """
+        place = self.get_object()
+        # user = request.user
+        user = User.objects.get(pk=1)
+        if not user.is_authenticated:
+            raise AuthenticationFailed('用户未登录', code='not_authenticated')
+
+        if request.method == 'POST':  # 添加
+            user_place_collection = UserPlaceCollection(user=user, place=place)
+            place.collection_count += 1
+            user_place_collection.save()
+            place.save()
+            return Response(status=status.HTTP_201_CREATED)
+        elif request.method == 'DELETE':  # 删除
+            user_place_collection = UserPlaceCollection.objects.get(user=user, place=place)
+            place.collection_num -= 1
+            user_place_collection.delete()
+            place.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)

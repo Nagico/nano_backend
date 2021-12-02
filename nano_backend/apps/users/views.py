@@ -1,6 +1,7 @@
 import logging
 from django.conf import settings
 from rest_framework import serializers
+from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import CreateAPIView
 from rest_framework.mixins import DestroyModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
@@ -10,8 +11,9 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import User
-from .serializers import UserSerializer, LoginTokenObtainPairSerializer, CreateUserSerializer, UserInfoSerializer
+from .models import User, UserAnimeCollection, UserPlaceCollection
+from .serializers import UserSerializer, LoginTokenObtainPairSerializer, CreateUserSerializer, UserInfoSerializer, \
+    UserAnimeCollectionSerializer, UserPlaceCollectionSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +68,50 @@ class UserDetailViewSet(RetrieveModelMixin,
         """
         kwargs['partial'] = True
         return super().update(request, *args, **kwargs)
+
+
+class UserAnimeCollectionViewSet(GenericViewSet):
+    """
+    用户动画收藏视图
+    """
+    queryset = UserAnimeCollection.objects.all()
+    serializer_class = UserAnimeCollectionSerializer
+    # permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+
+    def list(self, request, *args, **kwargs):
+        # queryset = self.get_queryset().filter(user=request.user)
+        queryset = self.get_queryset().filter(user=User.objects.get(id=1))
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class UserPlaceCollectionViewSet(GenericViewSet):
+    """
+    用户地点收藏视图
+    """
+    queryset = UserPlaceCollection.objects.all()
+    serializer_class = UserPlaceCollectionSerializer
+    # permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+
+    def list(self, request, *args, **kwargs):
+        # queryset = self.get_queryset().filter(user=request.user)
+        queryset = self.get_queryset().filter(user=User.objects.get(id=1))
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class UserInfoViewSet(RetrieveModelMixin, GenericViewSet):

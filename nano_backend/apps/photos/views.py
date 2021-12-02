@@ -11,7 +11,7 @@ from .serializers import PhotoDetailSerializer
 
 
 class PhotoViewSet(ModelViewSet):
-    queryset = Photo.objects.filter(Q(is_approved=True) | Q(create_user=User.objects.get(pk=1)))
+    queryset = Photo.objects.filter(is_approved=True)
     filter_backends = [OrderingFilter, DjangoFilterBackend]  # 排序 过滤
     serializer_class = PhotoDetailSerializer
 

@@ -7,7 +7,9 @@ from rest_framework_simplejwt.serializers import PasswordField, TokenObtainPairS
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import User
+from animes.serializers import AnimeInfoSerializer
+from places.serializers import PlaceInfoSerializer
+from .models import User, UserAnimeCollection, UserPlaceCollection
 from nano_backend.utils.crypto import Crypto
 
 
@@ -18,7 +20,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ['is_active', 'is_superuser', 'is_staff', 'date_joined', 'last_login',
-                   'first_name', 'last_name', 'groups', 'user_permissions', 'email']
+                   'first_name', 'last_name', 'groups', 'user_permissions', 'email',
+                   'collection_anime', 'collection_place']
 
     password = PasswordField(write_only=True)
     password2 = PasswordField(write_only=True)
@@ -62,6 +65,28 @@ class UserSerializer(serializers.ModelSerializer):
             attrs.pop('password2')  # 删除密码2
 
         return attrs
+
+
+class UserAnimeCollectionSerializer(serializers.ModelSerializer):
+    """
+    用户收藏动画序列化器
+    """
+    anime = AnimeInfoSerializer(read_only=True)
+
+    class Meta:
+        model = UserAnimeCollection
+        fields = ['anime']
+
+
+class UserPlaceCollectionSerializer(serializers.ModelSerializer):
+    """
+    用户收藏地点序列化器
+    """
+    place = PlaceInfoSerializer(read_only=True)
+
+    class Meta:
+        model = UserPlaceCollection
+        fields = ['place']
 
 
 class UserInfoSerializer(serializers.ModelSerializer):

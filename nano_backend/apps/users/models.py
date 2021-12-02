@@ -5,6 +5,34 @@ from django.contrib.auth.models import AbstractUser
 from nano_backend.utils.fastdfs.fdfs_storage import FastDFSAvatarStorage
 
 
+class UserAnimeCollection(models.Model):
+    """
+    用户收藏的Anime
+    """
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='用户')
+    anime = models.ForeignKey('animes.Anime', on_delete=models.CASCADE, verbose_name='Anime')
+
+    class Meta:
+        app_label = 'users'
+        db_table = 'tb_user_anime_collection'
+        verbose_name = '用户收藏的Anime'
+        verbose_name_plural = verbose_name
+
+
+class UserPlaceCollection(models.Model):
+    """
+    用户收藏的Place
+    """
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='用户')
+    place = models.ForeignKey('places.Place', on_delete=models.CASCADE, verbose_name='Place')
+
+    class Meta:
+        app_label = 'users'
+        db_table = 'tb_user_place_collection'
+        verbose_name = '用户收藏的Place'
+        verbose_name_plural = verbose_name
+
+
 class User(AbstractUser):
     """
     用户信息，扩展相关字段
@@ -14,13 +42,15 @@ class User(AbstractUser):
                                storage=FastDFSAvatarStorage)
     mobile = models.CharField(max_length=11, unique=True, verbose_name='手机号')
 
-    collection_anime = models.ManyToManyField('animes.Anime', related_name='collection_user', blank=True,
-                                              verbose_name='Anime收藏')
-    collection_place = models.ManyToManyField('places.Place', related_name='collection_user', blank=True,
-                                              verbose_name='Place收藏')
+    collection_anime = models.ManyToManyField('animes.Anime', related_name='collection_user',
+                                              through='users.UserAnimeCollection', blank=True, verbose_name='Anime收藏')
+    collection_place = models.ManyToManyField('places.Place', related_name='collection_user',
+                                              through='users.UserPlaceCollection', blank=True, verbose_name='Place收藏')
 
     class Meta:
         app_label = 'users'
         db_table = 'tb_user'
         verbose_name = '用户信息'
         verbose_name_plural = verbose_name
+
+

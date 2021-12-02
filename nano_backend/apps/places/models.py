@@ -22,6 +22,8 @@ class Place(models.Model):
     is_public = models.BooleanField(default=False, verbose_name='是否公开')
     is_approved = models.BooleanField(default=False, verbose_name='是否通过审核')
 
+    collection_num = models.IntegerField(default=0, verbose_name='收藏数')
+
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
 

@@ -18,6 +18,8 @@ class Anime(models.Model):
                                     verbose_name='创建者')
     contributor = models.ManyToManyField('users.User', related_name='anime_contributor', verbose_name='贡献者')
 
+    collection_num = models.IntegerField(default=0, verbose_name='收藏数')
+
     is_public = models.BooleanField(default=False, verbose_name='是否公开')
     is_approved = models.BooleanField(default=False, verbose_name='是否通过审核')
 

@@ -1,3 +1,4 @@
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ListSerializer
 
 import users.models
@@ -10,12 +11,13 @@ class PlaceDetailsSerializer(ModelSerializer):
     """
     place 详细信息
     """
-    photos = PhotoLimitSerializer(many=True, read_only=True)
+    photos = PhotoLimitSerializer(label='图片预览', many=True, read_only=True)
+
 
     class Meta:
         model = Place
         fields = '__all__'
-        read_only_fields = ['photo', 'create_user', 'contributor', 'is_approved']
+        read_only_fields = ['photo', 'create_user', 'contributor', 'is_approved', 'collection_num']
 
     def validate(self, attrs):
         # attrs['create_user'] = self.context['request'].user
@@ -25,13 +27,14 @@ class PlaceDetailsSerializer(ModelSerializer):
         return attrs
 
 
+
 class PlaceInfoSerializer(ModelSerializer):
     """
     place 简要信息
     """
     class Meta:
         model = Place
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'location']
 
 
 class PlaceLimitSerializer(ModelSerializer):

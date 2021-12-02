@@ -283,4 +283,4 @@ FDFS_URL = f'http://{FDFS_HOST}:8888/'
 FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
 
 # Avatar
-DEFAULT_AVATAR_PATH = f'{FDFS_URL}/group1/M00/00/00/wKjvgGGoiV-AETMXAAAMK5bwTxs200.jpg'
+DEFAULT_AVATAR_PATH = f'group1/M00/00/00/wKjvgGGoiV-AETMXAAAMK5bwTxs200.jpg'
