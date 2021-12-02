@@ -5,7 +5,6 @@ django_redis==5.0.0
 djangorestframework==3.12.4
 djangorestframework_simplejwt==5.0.0
 drf_spectacular==0.21.0
-fdfs_client==4.0.7
 Pillow==8.4.0
 py3Fdfs==2.2.0
 pycryptodome==3.11.0
