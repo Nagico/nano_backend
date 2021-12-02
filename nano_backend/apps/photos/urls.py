@@ -9,6 +9,6 @@ urlpatterns = [
 
 ]
 
-router.register(r'', views.PhotoViewSet)
+router.register(r'', views.PhotoViewSet, basename='photos')  # photo 视图集
 
 urlpatterns += router.urls

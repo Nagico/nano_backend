@@ -1,7 +1,5 @@
 from django.db import models
 
-from nano_backend.utils.choices import StatusChoice
-
 
 class Anime(models.Model):
     """
@@ -14,13 +12,14 @@ class Anime(models.Model):
     cover = models.ImageField(upload_to='animes/cover', verbose_name='封面图片')
     cover_small = models.ImageField(upload_to='animes/cover_small', verbose_name='封面图片(小)')
 
-    place = models.ManyToManyField('places.Place', related_name='anime_related', blank=True, verbose_name='相关地点')
-
     create_user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='anime_create_user',
                                     verbose_name='创建者')
     contributor = models.ManyToManyField('users.User', related_name='anime_contributor', verbose_name='贡献者')
 
-    status = models.IntegerField(choices=StatusChoice.choices, default=StatusChoice.UNPUBLISHED, verbose_name='状态')
+    collection_num = models.IntegerField(default=0, verbose_name='收藏数')
+
+    is_public = models.BooleanField(default=False, verbose_name='是否公开')
+    is_approved = models.BooleanField(default=False, verbose_name='是否通过审核')
 
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     update_time = models.DateTimeField(auto_now=True, verbose_name='更新时间')
