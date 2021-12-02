@@ -13,3 +13,9 @@ class AnimeViewSet(ModelViewSet):
     """
     queryset = Anime.objects.all()
     serializer_class = AnimeSerializer
+
+    def update(self, request, *args, **kwargs):
+        """
+        支持部分更新
+        """
+        self.partial_update(request, *args, **kwargs)
