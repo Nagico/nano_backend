@@ -18,6 +18,7 @@ import datetime
 
 MYSQL_HOST = '192.168.239.128'
 REDIS_HOST = '192.168.239.128'
+FDFS_HOST = '192.168.239.128'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -265,3 +266,13 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     # OTHER SETTINGS
 }
+
+# django文件存储
+DEFAULT_FILE_STORAGE = 'nano_backend.utils.fastdfs.fdfs_storage.FastDFSStorage'
+
+# FastDFS
+FDFS_URL = f'http://{FDFS_HOST}:8888/'
+FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
+
+# Avatar
+DEFAULT_AVATAR_PATH = f'{FDFS_URL}/group1/M00/00/00/wKjvgGGoiV-AETMXAAAMK5bwTxs200.jpg'

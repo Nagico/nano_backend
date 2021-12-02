@@ -1,7 +1,8 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-from nano_backend.utils.storage import AvatarStorage
+from nano_backend.utils.fastdfs.fdfs_storage import FastDFSAvatarStorage
 
 
 class User(AbstractUser):
@@ -9,8 +10,8 @@ class User(AbstractUser):
     用户信息，扩展相关字段
     """
 
-    avatar = models.ImageField(upload_to='avatar', default='avatar/default.jpg', verbose_name='头像',
-                               storage=AvatarStorage)
+    avatar = models.ImageField(upload_to='avatar', default=settings.DEFAULT_AVATAR_PATH, verbose_name='头像',
+                               storage=FastDFSAvatarStorage)
     mobile = models.CharField(max_length=11, unique=True, verbose_name='手机号')
 
     collection_anime = models.ManyToManyField('animes.Anime', related_name='collection_user', blank=True,

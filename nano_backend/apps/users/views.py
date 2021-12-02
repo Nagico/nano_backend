@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.core.files.uploadhandler import MemoryFileUploadHandler
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
@@ -35,7 +36,7 @@ class UserInfoViewSet(RetrieveModelMixin,
         头像检测
         """
         if not value:  # 未找到头像文件
-            return 'media/avatar/default.jpg'
+            return settings.DEFAULT_AVATAR_PATH
 
         if value.content_type not in ['image/jpeg', 'image/png', 'image/gif']:  # 文件类型不正确
             raise serializers.ValidationError(detail='Avatar is not a image', code='avatar_not_image')
@@ -45,7 +46,7 @@ class UserInfoViewSet(RetrieveModelMixin,
         if value.size < 1024:  # 头像文件小于1KB
             raise serializers.ValidationError(detail='Avatar is smaller than 1KB', code='avatar_too_small')
 
-        if self.instance.avatar != 'media/avatar/default.jpg':  # 已存在头像文件
+        if self.instance.avatar != settings.DEFAULT_AVATAR_PATH:  # 已存在头像文件
             self.instance.avatar.delete()  # 删除原头像文件
 
         return value
@@ -65,7 +66,6 @@ class UserInfoViewSet(RetrieveModelMixin,
         """
         重写update逻辑
         """
-        request.upload_handlers = [MemoryFileUploadHandler(request)]  # 头像默认使用内存上传
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
