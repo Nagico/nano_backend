@@ -11,8 +11,7 @@ class PlaceDetailsSerializer(ModelSerializer):
     """
     place 详细信息
     """
-    photos = PhotoLimitSerializer(label='图片预览', many=True, read_only=True)
-
+    photos = PhotoLimitSerializer(label='图片预览', many=True, read_only=True)  # 嵌套序列化器
 
     class Meta:
         model = Place
@@ -20,12 +19,12 @@ class PlaceDetailsSerializer(ModelSerializer):
         read_only_fields = ['photo', 'create_user', 'contributor', 'is_approved', 'collection_num']
 
     def validate(self, attrs):
-        # attrs['create_user'] = self.context['request'].user
-        # attrs['contributor'] = self.context['request'].user
-        attrs['create_user'] = users.models.User.objects.get(pk=1)
-        attrs['contributor'] = [users.models.User.objects.get(pk=1)]
+        """
+        自动添加创建者信息
+        """
+        attrs['create_user'] = self.context['request'].user
+        attrs['contributor'] = [self.context['request'].user]
         return attrs
-
 
 
 class PlaceInfoSerializer(ModelSerializer):
@@ -34,7 +33,7 @@ class PlaceInfoSerializer(ModelSerializer):
     """
     class Meta:
         model = Place
-        fields = ['id', 'name', 'location']
+        fields = ['id', 'name', 'address']
 
 
 class PlaceLimitSerializer(ModelSerializer):

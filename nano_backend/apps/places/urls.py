@@ -9,6 +9,6 @@ urlpatterns = [
 
 ]
 
-router.register(r'', views.PlaceViewSet)
+router.register(r'', views.PlaceViewSet, basename='places')
 
 urlpatterns += router.urls

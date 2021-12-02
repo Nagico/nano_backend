@@ -1,14 +1,13 @@
 import logging
 from django.conf import settings
 from rest_framework import serializers
-from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import CreateAPIView
 from rest_framework.mixins import DestroyModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import User, UserAnimeCollection, UserPlaceCollection
@@ -27,9 +26,7 @@ class UserDetailViewSet(RetrieveModelMixin,
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    # authentication_classes = [UserActiveAuthentication]  # 不检测是否激活
-    # permission_classes = [IsAuthenticated]  # 仅登录用户可访问个人信息
-    permission_classes = [AllowAny]  # 测试使用
+    permission_classes = [IsAuthenticated]  # 仅登录用户可访问个人信息
 
     def validate_avatar(self, value):
         """
@@ -55,8 +52,7 @@ class UserDetailViewSet(RetrieveModelMixin,
         """
         重写对象获取逻辑，获取当前登录用户的信息
         """
-        # obj = self.get_queryset().get(id=self.request.user.id)  # 从jwt鉴权中获取当前登录用户的uid
-        obj = self.get_queryset().get(id=1)  # 从jwt鉴权中获取当前登录用户的uid
+        obj = self.get_queryset().get(id=self.request.user.id)  # 从jwt鉴权中获取当前登录用户的uid
         if obj is None:
             raise NotFound('User not found', code='user_not_found')
 
@@ -76,12 +72,10 @@ class UserAnimeCollectionViewSet(GenericViewSet):
     """
     queryset = UserAnimeCollection.objects.all()
     serializer_class = UserAnimeCollectionSerializer
-    # permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]  # 仅允许登录用户操作
 
     def list(self, request, *args, **kwargs):
-        # queryset = self.get_queryset().filter(user=request.user)
-        queryset = self.get_queryset().filter(user=User.objects.get(id=1))
+        queryset = self.get_queryset().filter(user=request.user)  # 获取当前登录用户收藏列表
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -98,12 +92,10 @@ class UserPlaceCollectionViewSet(GenericViewSet):
     """
     queryset = UserPlaceCollection.objects.all()
     serializer_class = UserPlaceCollectionSerializer
-    # permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]  # 仅允许登录用户操作
 
     def list(self, request, *args, **kwargs):
-        # queryset = self.get_queryset().filter(user=request.user)
-        queryset = self.get_queryset().filter(user=User.objects.get(id=1))
+        queryset = self.get_queryset().filter(user=request.user)  # 获取当前登录用户收藏列表
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -120,6 +112,7 @@ class UserInfoViewSet(RetrieveModelMixin, GenericViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserInfoSerializer
+    permission_classes = [AllowAny]  # 允许任何人
 
 
 class LoginTokenObtainPairView(TokenObtainPairView):
@@ -141,6 +134,8 @@ class UsernameCountView(APIView):
     判断用户名是否存在
     """
 
+    permission_classes = [AllowAny]  # 允许任何人
+
     def get(self, request, username):
         count = User.objects.filter(username=username).count()
 
@@ -156,6 +151,8 @@ class MobileCountView(APIView):
     """
     判断手机号是否存在
     """
+
+    permission_classes = [AllowAny]  # 允许任何人
 
     def get(self, request, mobile):
         count = User.objects.filter(mobile=mobile).count()

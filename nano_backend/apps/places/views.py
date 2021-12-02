@@ -3,6 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
@@ -15,12 +16,13 @@ from .serializers import PlaceDetailsSerializer
 
 
 class PlaceViewSet(ModelViewSet):
-    queryset = Place.objects.all()
     serializer_class = PlaceDetailsSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]  # 排序 过滤
 
     ordering_fields = ['id', 'create_time', 'update_time', 'name', 'is_approved', 'is_public', 'create_user', 'anime_id']  # 排序字段
     filterset_class = PlaceFilter  # 自定义过滤器
+
+    permission_classes = [AllowAny]  # 允许任何人
 
     def update(self, request, *args, **kwargs):
         """
@@ -30,7 +32,16 @@ class PlaceViewSet(ModelViewSet):
         return super().update(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.queryset.filter(Q(is_approved=True) | Q(create_user=User.objects.get(pk=1)))
+        """
+        动态获取查询集，根据登录情况返回
+        :return:
+        """
+        user = self.request.user  # 获取当前用户
+
+        if user.is_authenticated:  # 用户已登录
+            return Place.objects.filter(Q(create_user=user) | Q(is_public=True))
+        else:  # 用户未登录
+            return Place.objects.filter(is_public=True)
 
     def update_contributor(self):
         """
@@ -62,11 +73,10 @@ class PlaceViewSet(ModelViewSet):
     @action(methods=['post', 'delete'], detail=True)
     def collection(self, request, pk=None):
         """
-        place 收藏
+        place 收藏增删
         """
         place = self.get_object()
-        # user = request.user
-        user = User.objects.get(pk=1)
+        user = request.user  # 获取当前用户
         if not user.is_authenticated:
             raise AuthenticationFailed('用户未登录', code='not_authenticated')
 

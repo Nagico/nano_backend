@@ -1,7 +1,5 @@
-from rest_framework.serializers import ModelSerializer, ListSerializer
+from rest_framework.serializers import ModelSerializer
 
-import users.models
-from nano_backend.utils.choices import StatusChoice
 from nano_backend.utils.serializers import LimitedListSerializer
 from .models import Photo
 
@@ -16,8 +14,7 @@ class PhotoDetailSerializer(ModelSerializer):
         read_only_fields = ['create_user', 'is_approved']
 
     def validate(self, attrs):
-        # attrs['create_user'] = self.context['request'].user
-        attrs['create_user'] = users.models.User.objects.get(pk=1)
+        attrs['create_user'] = self.context['request'].user  # 获取当前登录用户
         return attrs
 
 

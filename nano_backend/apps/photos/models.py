@@ -1,6 +1,6 @@
 from django.db import models
 
-from nano_backend.utils.choices import ImageTypeChoice, StatusChoice
+from nano_backend.utils.choices import ImageTypeChoice
 
 
 class Photo(models.Model):

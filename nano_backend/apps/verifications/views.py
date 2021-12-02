@@ -1,5 +1,7 @@
 import logging
 from random import randint
+
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django_redis import get_redis_connection
@@ -15,6 +17,8 @@ class SMSCodeView(APIView):
     """
     短信验证码验证
     """
+
+    permission_classes = [AllowAny]  # 允许任何人
 
     def get(self, request, mobile):
         """

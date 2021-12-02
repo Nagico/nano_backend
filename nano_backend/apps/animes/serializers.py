@@ -21,11 +21,11 @@ class AnimeDetailSerializer(serializers.ModelSerializer):
         read_only_fields = ['place', 'create_user', 'contributor', 'is_approved', 'collection_num']
 
     def validate(self, attrs):
-
-        # attrs['create_user'] = self.context['request'].user
-        # attrs['contributor'] = self.context['request'].user
-        attrs['create_user'] = users.models.User.objects.get(pk=1)
-        attrs['contributor'] = [users.models.User.objects.get(pk=1)]
+        """
+        添加创建者信息
+        """
+        attrs['create_user'] = self.context['request'].user
+        attrs['contributor'] = [self.context['request'].user]
 
         return attrs
 

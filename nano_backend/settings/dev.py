@@ -221,13 +221,13 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'nano_backend.utils.exceptions.exception_handler',
 
     # 认证配置
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
-    # # 全局认证 优先级高于试图类中的配置 login view中，进行用户验证时
-    # 'DEFAULT_AUTHENTICATION_CLASSES': [
-    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
-    # ],
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+    # 全局认证 优先级高于试图类中的配置 login view中，进行用户验证时
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
 
     # api 默认文档
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
@@ -240,9 +240,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,  # 默认每页数目
     'PAGE_SIZE_QUERY_PARAM': 'page_size',  # 控制每页数目的参数
 }
-
-# 修改 Django 认证用户模型类(必须以 应用名.模型 格式导入)
-# AUTH_USER_MODEL = 'users.User'
 
 # CORS
 CORS_ORIGIN_WHITELIST = (

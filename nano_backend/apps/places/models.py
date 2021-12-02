@@ -1,7 +1,5 @@
 from django.db import models
 
-from nano_backend.utils.choices import StatusChoice
-
 
 class Place(models.Model):
     """

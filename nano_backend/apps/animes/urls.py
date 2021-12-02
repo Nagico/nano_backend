@@ -9,6 +9,6 @@ urlpatterns = [
 
 ]
 
-router.register(r'', views.AnimeViewSet)
+router.register(r'', views.AnimeViewSet, basename='animes')  # Anime 视图集
 
 urlpatterns += router.urls
