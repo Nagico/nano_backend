@@ -1,3 +1,6 @@
+from django.core.files.uploadhandler import MemoryFileUploadHandler
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from .models import Anime
@@ -10,5 +13,3 @@ class AnimeViewSet(ModelViewSet):
     """
     queryset = Anime.objects.all()
     serializer_class = AnimeSerializer
-
-    

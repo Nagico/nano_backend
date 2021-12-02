@@ -44,3 +44,35 @@ class AvatarStorage(FileSystemStorage):
         name = os.path.join(d, fn + ext)  # 重写合成文件名
 
         return super(AvatarStorage, self)._save(name, content)
+
+
+class ImageStorage(FileSystemStorage):
+    """
+    图片存储
+    """
+    def __init__(self, location=settings.MEDIA_ROOT, base_url=settings.MEDIA_URL):
+        super(ImageStorage, self).__init__(location, base_url)
+
+    def _save(self, name, content):
+        """
+        重写 _save方法
+        """
+        image = Image.open(content.file)
+
+        # 转换格式
+        new_image = io.BytesIO()
+        image = image.convert('RGB')
+        image.save(new_image, format='JPEG')
+        content.file = new_image
+        content.content_type = 'image/jpeg'
+
+        # 随机化文件名
+        ext = '.jpg'  # 文件扩展名
+        d = os.path.dirname(name)  # 文件目录
+
+        fn = time.strftime('%Y%m%d%H%M%S')  # 定义文件名，年月日时分秒随机数
+        fn = fn + '_%d' % random.randint(0, 100)
+
+        name = os.path.join(d, fn + ext)  # 重写合成文件名
+
+        return super(ImageStorage, self)._save(name, content)
