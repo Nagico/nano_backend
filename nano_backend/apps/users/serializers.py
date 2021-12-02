@@ -64,6 +64,15 @@ class UserSerializer(serializers.ModelSerializer):
         return attrs
 
 
+class UserInfoSerializer(serializers.ModelSerializer):
+    """
+    公开信息序列化器
+    """
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'avatar']
+
+
 class LoginTokenObtainPairSerializer(TokenObtainPairSerializer):
     """
     登录获取token序列化器

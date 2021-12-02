@@ -1,7 +1,5 @@
 import logging
-
 from django.conf import settings
-from django.core.files.uploadhandler import MemoryFileUploadHandler
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import CreateAPIView
@@ -13,17 +11,17 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import User
-from .serializers import UserSerializer, LoginTokenObtainPairSerializer, CreateUserSerializer
+from .serializers import UserSerializer, LoginTokenObtainPairSerializer, CreateUserSerializer, UserInfoSerializer
 
 logger = logging.getLogger(__name__)
 
 
-class UserInfoViewSet(RetrieveModelMixin,
-                      UpdateModelMixin,
-                      DestroyModelMixin,
-                      GenericViewSet):
+class UserDetailViewSet(RetrieveModelMixin,
+                        UpdateModelMixin,
+                        DestroyModelMixin,
+                        GenericViewSet):
     """
-    用户信息视图, 该接口不属于rest风格
+    该用户信息视图
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -68,6 +66,14 @@ class UserInfoViewSet(RetrieveModelMixin,
         """
         kwargs['partial'] = True
         return super().update(request, *args, **kwargs)
+
+
+class UserInfoViewSet(RetrieveModelMixin, GenericViewSet):
+    """
+    获取用户可公开信息
+    """
+    queryset = User.objects.all()
+    serializer_class = UserInfoSerializer
 
 
 class LoginTokenObtainPairView(TokenObtainPairView):
