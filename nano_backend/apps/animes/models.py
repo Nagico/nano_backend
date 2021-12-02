@@ -20,7 +20,8 @@ class Anime(models.Model):
                                     verbose_name='创建者')
     contributor = models.ManyToManyField('users.User', related_name='anime_contributor', verbose_name='贡献者')
 
-    status = models.IntegerField(choices=StatusChoice.choices, default=StatusChoice.UNPUBLISHED, verbose_name='状态')
+    is_public = models.BooleanField(default=False, verbose_name='是否公开')
+    is_approved = models.BooleanField(default=False, verbose_name='是否通过审核')
 
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     update_time = models.DateTimeField(auto_now=True, verbose_name='更新时间')
