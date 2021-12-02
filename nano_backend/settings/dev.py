@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'corsheaders',  # CORS 跨域
     'rest_framework_simplejwt',  # JWT
     'drf_spectacular',  # api 文档
+    'django_filters',  # 过滤器
 
     'users',  # 用户
     'animes',  # 番剧
@@ -218,6 +219,7 @@ LOGGING = {
 REST_FRAMEWORK = {
     # 异常处理
     'EXCEPTION_HANDLER': 'nano_backend.utils.exceptions.exception_handler',
+
     # 认证配置
     # 'DEFAULT_PERMISSION_CLASSES': (
     #     'rest_framework.permissions.IsAuthenticated',
@@ -226,7 +228,17 @@ REST_FRAMEWORK = {
     # 'DEFAULT_AUTHENTICATION_CLASSES': [
     #     'rest_framework_simplejwt.authentication.JWTAuthentication',
     # ],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  # api 默认文档
+
+    # api 默认文档
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
+    # 过滤器
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+
+    # 分页
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,  # 默认每页数目
+    'PAGE_SIZE_QUERY_PARAM': 'page_size',  # 控制每页数目的参数
 }
 
 # 修改 Django 认证用户模型类(必须以 应用名.模型 格式导入)
@@ -239,6 +251,7 @@ CORS_ORIGIN_WHITELIST = (
     'https://127.0.0.1:8080',
     'https://localhost:8080'
 )
+
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
 
 
@@ -250,11 +263,6 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION'
 }
-
-# 媒体文件
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
-AVATAR_BASE_WIDTH = 400
 
 # 自定义用户类
 AUTH_USER_MODEL = 'users.User'
