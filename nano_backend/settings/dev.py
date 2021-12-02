@@ -267,7 +267,7 @@ AUTH_USER_MODEL = 'users.User'
 # API 文档设置
 SPECTACULAR_SETTINGS = {
     'TITLE': 'nano API接口文档',
-    'DESCRIPTION': '项目详情介绍',
+    # 'DESCRIPTION': '',
     'VERSION': '1.0.0',
     # OTHER SETTINGS
 }

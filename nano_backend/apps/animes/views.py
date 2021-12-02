@@ -1,4 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
@@ -14,6 +15,15 @@ from .models import Anime
 from .serializers import AnimeDetailSerializer
 
 
+@extend_schema_view(
+    list=extend_schema(
+        description='分页获取动画列表',
+        tags=['Anime'],
+        responses={
+            status.HTTP_200_OK: AnimeDetailSerializer(many=True),
+        },
+    ),
+)
 class AnimeViewSet(ModelViewSet):
     """
     Anime ViewSet
