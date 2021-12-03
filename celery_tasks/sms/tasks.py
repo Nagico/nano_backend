@@ -18,5 +18,5 @@ def send_sms_code(mobile, sms_code):
     :param sms_code: 验证码
 
     """
-    res = sms.send_fake(mobile, [sms_code, str(constants.SMS_CODE_REDIS_EXPIRES // 60)])
-    logger.info(res)
+    res = sms.send(mobile, [sms_code, str(constants.SMS_CODE_REDIS_EXPIRES // 60)], '1220844')
+    print(res)
