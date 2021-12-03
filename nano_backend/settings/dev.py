@@ -31,7 +31,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))  # 新增导包路径
 SECRET_KEY = 'django-insecure-186w)w_wu3s_%_0#@v3l357hb^jy$j5sj6pc1iw0m46$)74k_*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '*',
@@ -142,6 +142,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
 
 # Redis
 CACHES = {

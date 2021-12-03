@@ -16,9 +16,9 @@ import os
 import sys
 import datetime
 
-MYSQL_HOST = os.environ.get('MYSQL_HOST', '192.168.239.128')
-REDIS_HOST = os.environ.get('REDIS_HOST', '192.168.239.128')
-FDFS_HOST = os.environ.get('FDFS_HOST', '192.168.239.128')
+MYSQL_HOST = os.environ.get('MYSQL_HOST', '127.0.0.1')
+REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
+MEDIA_HOST = os.environ.get('MEDIA_HOST', '127.0.0.1')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -31,7 +31,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))  # 新增导包路径
 SECRET_KEY = 'django-insecure-186w)w_wu3s_%_0#@v3l357hb^jy$j5sj6pc1iw0m46$)74k_*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '*',
@@ -100,10 +100,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'HOST': MYSQL_HOST,  # 数据库主机
-        'PORT': 3306,  # 数据库端口
-        'USER': 'nano',  # 数据库用户名
-        'PASSWORD': 'nano',  # 数据库用户密码
-        'NAME': 'nano'  # 数据库名字
+        'PORT': os.environ.get('MYSQL_PORT', 3306),  # 数据库端口
+        'USER': os.environ.get('MYSQL_USER', 'nano'),  # 数据库用户名
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'nano'),  # 数据库用户密码
+        'NAME': os.environ.get('MYSQL_DATABASE', 'nano')  # 数据库名字
     }
 }
 
@@ -340,11 +340,11 @@ SPECTACULAR_SETTINGS = {
 DEFAULT_FILE_STORAGE = 'nano_backend.utils.fastdfs.fdfs_storage.FastDFSStorage'
 
 # FastDFS
-FDFS_URL = f'http://{FDFS_HOST}:8888/'
+FDFS_URL = f'http://{MEDIA_HOST}/'
 FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
 
 # Avatar
-DEFAULT_AVATAR_PATH = f'group1/M00/00/00/wKjvgGGoiV-AETMXAAAMK5bwTxs200.jpg'
+DEFAULT_AVATAR_PATH = os.environ.get('DEFAULT_AVATAR')
 
 # admin
 SIMPLEUI_DEFAULT_THEME = 'ant.design.css'
