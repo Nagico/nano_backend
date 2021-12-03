@@ -19,6 +19,7 @@ services:
 
   ### Django container #########################################
   django:
+      image: nano:custom
       build:
         context: ./
       container_name: nano_django
@@ -47,8 +48,7 @@ services:
       /bin/bash -c "redis-server /usr/local/etc/redis/redis.conf "
   ### Celery container ##########################################
   celery:
-    build:
-      context: ./
+    image: nano:custom
     container_name: nano_celery
     env_file: .env # ENV
     volumes: #项目数据持久化配置---包括项目、uwsgi配置文件
