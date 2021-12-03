@@ -14,4 +14,3 @@ django-simpleui
 uwsgi
 django-cors-headers
 mysqlclient
-

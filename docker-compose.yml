@@ -4,6 +4,7 @@ services:
   ### Nginx container #########################################
   nginx:
     image: nginx:1.17-alpine  #定义nginx使用的镜像，直接从docker hub上获取
+    container_name: nano_neginx
     ports:
       - "8081:${NANO_HTTP_PORT}"
     volumes: #nginx数据持久化配置---包括项目、项目nginx配置文件和nginx日志文件
@@ -20,6 +21,7 @@ services:
   django:
       build:
         context: ./
+      container_name: nano_django
       env_file: .env # ENV
       volumes: #项目数据持久化配置---包括项目、uwsgi配置文件
         - ./:/etc/uwsgi/nano_backend:rw
@@ -33,7 +35,7 @@ services:
   ### Redis container ##########################################
   redis:
     image: redis:latest
-    container_name: redis
+    container_name: nano_redis
     restart: always
     networks:
       net-django:
@@ -43,6 +45,20 @@ services:
       - ./redis/data:/data:rw
     command:
       /bin/bash -c "redis-server /usr/local/etc/redis/redis.conf "
+  ### Celery container ##########################################
+  celery:
+    build:
+      context: ./
+    container_name: nano_celery
+    env_file: .env # ENV
+    volumes: #项目数据持久化配置---包括项目、uwsgi配置文件
+      - ./:/etc/uwsgi/nano_backend:rw
+    restart: always #系统重启后容器自动启动
+    privileged: true   #容器启动后是否有系统权限
+    networks: #定义该容器的网桥名称和IP地址
+      net-django:
+        ipv4_address: 10.10.2.6
+    command: celery -A celery_tasks.main worker -l info
 
 ### Add Network Bridge info #########################################
 networks:   #定义整个docker-compose编排的容器使用的网桥名称和IP地址网段，注意 x.x.x.1不能使用
