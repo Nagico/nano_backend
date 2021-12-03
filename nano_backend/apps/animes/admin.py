@@ -1,10 +1,11 @@
 from django.contrib import admin
 
+from nano_backend.utils.mixins.admin import StaffRequiredAdminMixin
 from .models import Anime
 
 
 @admin.register(Anime)
-class AnimeAdmin(admin.ModelAdmin):
+class AnimeAdmin(StaffRequiredAdminMixin, admin.ModelAdmin):
     list_per_page = 20  # 每页显示条数
     list_display = ['id', 'title', 'title_cn', 'is_public', 'is_approved', 'update_time', 'create_time']  # 列表显示字段
     list_display_links = ['id', 'title', 'title_cn']  # 列表可点击字段

@@ -1,10 +1,11 @@
 from django.contrib import admin
 
+from nano_backend.utils.mixins.admin import StaffRequiredAdminMixin
 from .models import Place
 
 
 @admin.register(Place)
-class PlaceAdmin(admin.ModelAdmin):
+class PlaceAdmin(StaffRequiredAdminMixin, admin.ModelAdmin):
     list_per_page = 20  # 每页显示条数
     list_display = ['id', 'name', 'address', 'anime_id', 'is_public', 'is_approved',
                     'create_user', 'update_time', 'create_time']
