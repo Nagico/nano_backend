@@ -23,10 +23,10 @@ class SuperUserPermAdminMixin(AdminMixin):
     超级用户权限检测
     """
     def check_perm_superuser(self, user_obj):
+        if user_obj.is_active and user_obj.is_superuser:
+            return True
         if not user_obj.is_active or user_obj.is_anonymous or user_obj.is_staff:
             return False
-        if user_obj.is_superuser:
-            return True
         return False
 
 
