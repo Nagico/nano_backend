@@ -1,3 +1,5 @@
+import logging
+
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import status
@@ -13,6 +15,8 @@ from users.models import UserAnimeCollection
 from .filters import AnimeFilter
 from .models import Anime
 from .serializers import AnimeDetailSerializer
+
+logger = logging.getLogger(__name__)
 
 
 @extend_schema_view(
@@ -49,12 +53,27 @@ class AnimeViewSet(ModelViewSet):
         else:  # 用户未登录
             return Anime.objects.filter(is_public=True)
 
+    def create(self, request, *args, **kwargs):
+        """
+        创建动画
+        """
+        logger.info(f'[anime/] user {request.user} create anime: {request.data}')
+        return super().create(request, *args, **kwargs)
+
     def update(self, request, *args, **kwargs):
         """
-        支持部分更新
+        更新动画
         """
         kwargs['partial'] = True
+        logger.info(f'[anime/{kwargs["pk"]}/] user {request.user} update anime: {request.data}')
         return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        删除动画
+        """
+        logger.info(f'[anime/{kwargs["pk"]}/] user {request.user} delete anime')
+        return super().destroy(request, *args, **kwargs)
 
     @action(methods=['post', 'delete'], detail=True)
     def collection(self, request, pk=None):
@@ -72,6 +91,7 @@ class AnimeViewSet(ModelViewSet):
             anime.collection_num += 1
             user_anime_collection.save()
             anime.save()
+            logger.info(f'[anime/{pk}/] user {user} add anime to collection')
             return Response(status=status.HTTP_201_CREATED)
         # 删除
         elif request.method == 'DELETE':
@@ -79,5 +99,6 @@ class AnimeViewSet(ModelViewSet):
             anime.collection_num -= 1
             user_anime_collection.delete()
             anime.save()
+            logger.info(f'[anime/{pk}/] user {user} delete anime from collection')
             return Response(status=status.HTTP_204_NO_CONTENT)
 

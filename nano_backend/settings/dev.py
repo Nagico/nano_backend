@@ -16,9 +16,9 @@ import os
 import sys
 import datetime
 
-MYSQL_HOST = '192.168.239.128'
-REDIS_HOST = '192.168.239.128'
-FDFS_HOST = '192.168.239.128'
+MYSQL_HOST = os.environ.get('MYSQL_HOST', '192.168.239.128')
+REDIS_HOST = os.environ.get('REDIS_HOST', '192.168.239.128')
+FDFS_HOST = os.environ.get('FDFS_HOST', '192.168.239.128')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -178,8 +178,11 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,  # 是否禁用已经存在的日志器
     'formatters': {  # 日志信息显示的格式
-        'verbose': {
+        'standard': {
             'format': '%(levelname)s %(asctime)s %(module)s %(lineno)d %(message)s'
+        },
+        'verbose': {
+            'format': '%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(levelname)s]- %(message)s'
         },
         'simple': {
             'format': '%(levelname)s %(module)s %(lineno)d %(message)s'
@@ -205,10 +208,75 @@ LOGGING = {
             'backupCount': 10,
             'formatter': 'verbose'
         },
+        'animes': {  # 向文件中输出日志
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), "logs/animes.log"),  # 日志文件的位置
+            'maxBytes': 300 * 1024 * 1024,
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+        'photos': {  # 向文件中输出日志
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), "logs/photos.log"),  # 日志文件的位置
+            'maxBytes': 300 * 1024 * 1024,
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+        'places': {  # 向文件中输出日志
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), "logs/places.log"),  # 日志文件的位置
+            'maxBytes': 300 * 1024 * 1024,
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+        'users': {  # 向文件中输出日志
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), "logs/users.log"),  # 日志文件的位置
+            'maxBytes': 300 * 1024 * 1024,
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+        'verifications': {  # 向文件中输出日志
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), "logs/verifications.log"),  # 日志文件的位置
+            'maxBytes': 300 * 1024 * 1024,
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
     },
     'loggers': {  # 日志器
-        'django': {  # 定义了一个名为django的日志器
+        'nano': {  # 定义了一个名为django的日志器
             'handlers': ['console', 'file'],  # 可以同时向终端与文件中输出日志
+            'propagate': True,  # 是否继续传递日志信息
+            'level': 'INFO',  # 日志器接收的最低日志级别
+        },
+        'animes': {
+            'handlers': ['console', 'animes'],  # 可以同时向终端与文件中输出日志
+            'propagate': True,  # 是否继续传递日志信息
+            'level': 'INFO',  # 日志器接收的最低日志级别
+        },
+        'photos': {
+            'handlers': ['console', 'photos'],  # 可以同时向终端与文件中输出日志
+            'propagate': True,  # 是否继续传递日志信息
+            'level': 'INFO',  # 日志器接收的最低日志级别
+        },
+        'places': {
+            'handlers': ['console', 'places'],  # 可以同时向终端与文件中输出日志
+            'propagate': True,  # 是否继续传递日志信息
+            'level': 'INFO',  # 日志器接收的最低日志级别
+        },
+        'users': {
+            'handlers': ['console', 'users'],  # 可以同时向终端与文件中输出日志
+            'propagate': True,  # 是否继续传递日志信息
+            'level': 'INFO',  # 日志器接收的最低日志级别
+        },
+        'verifications': {
+            'handlers': ['console', 'verifications'],  # 可以同时向终端与文件中输出日志
             'propagate': True,  # 是否继续传递日志信息
             'level': 'INFO',  # 日志器接收的最低日志级别
         },

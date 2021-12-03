@@ -10,7 +10,7 @@ from rest_framework import status
 from . import constants
 from celery_tasks.sms.tasks import send_sms_code
 
-logger = logging.getLogger('django')
+logger = logging.getLogger(__name__)
 
 
 class SMSCodeView(APIView):
@@ -38,7 +38,7 @@ class SMSCodeView(APIView):
 
         # 生成验证码
         sms_code = '%06d' % randint(0, 999999)
-        logger.info(f'{mobile} 短信验证码为：{sms_code}')
+        logger.info(f'[smscodes/{mobile}] verification code: {sms_code}')
 
         # 创建 redis 管道(管道可以一次执行多个命令，提高效率)
         pl = redis_conn.pipeline()

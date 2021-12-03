@@ -1,3 +1,5 @@
+import logging
+
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
@@ -9,6 +11,8 @@ from places.models import Place
 from users.models import User
 from .models import Photo
 from .serializers import PhotoDetailSerializer
+
+logger = logging.getLogger(__name__)
 
 
 class PhotoViewSet(ModelViewSet):
@@ -33,12 +37,27 @@ class PhotoViewSet(ModelViewSet):
         else:  # 用户未登录
             return Photo.objects.filter(is_public=True)
 
+    def create(self, request, *args, **kwargs):
+        """
+        创建照片
+        """
+        logger.info(f'[photo/] user {self.request.user} create: {request.data}')
+        return super().create(request, *args, **kwargs)
+
     def update(self, request, *args, **kwargs):
         """
-        支持部分更新
+        更新照片
         """
         kwargs['partial'] = True
+        logger.info(f'[photo/{self.kwargs["pk"]}/] user {self.request.user} update: {request.data}')
         return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        删除照片
+        """
+        logger.info(f'[photo/{self.kwargs["pk"]}/] user {self.request.user} destroy')
+        return super().destroy(request, *args, **kwargs)
 
     def update_contributor(self):
         """
@@ -59,8 +78,10 @@ class PhotoViewSet(ModelViewSet):
                 anime = photo.anime_id
                 place = photo.place_id
         if anime and place:  # 更新贡献者
-            anime.contributor.add(User.objects.get(pk=2))
-            place.contributor.add(User.objects.get(pk=2))
+            anime.contributor.add(self.request.user)
+            place.contributor.add(self.request.user)
+            logger.info(f'[anime/{anime.id}/] add contributor: {self.request.user}')
+            logger.info(f'[place/{place.id}/] add contributor: {self.request.user}')
             anime.save()
             place.save()
 
