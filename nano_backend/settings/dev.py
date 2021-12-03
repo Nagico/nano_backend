@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-186w)w_wu3s_%_0#@v3l357hb^jy$j5sj6pc1iw0m46$)74k_*
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
+    '*',
 ]
 
 # Application definition
@@ -347,6 +347,8 @@ FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
 DEFAULT_AVATAR_PATH = f'group1/M00/00/00/wKjvgGGoiV-AETMXAAAMK5bwTxs200.jpg'
 
 # admin
+SIMPLEUI_DEFAULT_THEME = 'ant.design.css'
+
 SIMPLEUI_CONFIG = {
     'system_keep': False,
     'menus': [
