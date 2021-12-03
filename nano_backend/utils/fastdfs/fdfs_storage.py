@@ -1,4 +1,5 @@
 import io
+import os
 
 from PIL import Image
 from django.conf import settings
@@ -21,6 +22,9 @@ class FastDFSStorage(Storage):
         if client_conf is None:
             client_conf = settings.FDFS_CLIENT_CONF
         self.tracker_conf = get_tracker_conf(client_conf)
+        # 判断是否有环境变量，如果有，则使用环境变量的值
+        self.tracker_conf['host_tuple'] = (os.environ.get('FASTDFS_TRACKER_HOST', self.tracker_conf['host_tuple'][0]),)
+        pass
 
     def _open(self, name, mode='rb'):
         """

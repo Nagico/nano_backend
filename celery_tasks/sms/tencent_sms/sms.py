@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 from tencentcloud.common import credential
 from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
@@ -7,7 +8,7 @@ from tencentcloud.common.profile.client_profile import ClientProfile
 from tencentcloud.common.profile.http_profile import HttpProfile
 
 
-def send(mobile, data):
+def send(mobile: str, data: List[str], template_id: str):
     try:
         # 必要步骤：
         # 实例化一个认证对象，入参需要传入腾讯云账户密钥对secretId，secretKey。
@@ -17,15 +18,16 @@ def send(mobile, data):
         # CAM密匙查询: https://console.cloud.tencent.com/cam/capi
         path = os.path.dirname(os.path.realpath(__file__)) + '/config.ini'
 
-        with open(path, 'r') as f:
-            secretID = f.readline()[:-1]
-            secretKey = f.readline()[:-1]
-        cred = credential.Credential(secretID, secretKey)
+        # 环境变量中获取
+        secret_id = os.environ.get('TENCENT_SMS_SECRET_ID', None)
+        secret_key = os.environ.get('TENCENT_SMS_SECRET_KEY', None)
 
-        # cred = credential.Credential(
-        #         os.environ.get("TENCENT_SMS_SECRET_ID"),
-        #         os.environ.get("TENCENT_SMS_SECRET_KEY")
-        #     )
+        if not secret_id or not secret_key:  # 环境变量中未找到
+            with open(path, 'r') as f:  # 从配置文件中读取
+                secret_id = f.readline().strip()
+                secret_key = f.readline().strip()
+
+        cred = credential.Credential(secret_id, secret_key)
 
         # 实例化一个http选项，可选的，没有特殊需求可以跳过。
         httpProfile = HttpProfile()
@@ -73,7 +75,7 @@ def send(mobile, data):
         # 示例如：+8613711112222， 其中前面有一个+号 ，86为国家码，13711112222为手机号，最多不要超过200个手机号
         req.PhoneNumberSet = [mobile]
         # 模板 ID: 必须填写已审核通过的模板 ID。模板ID可登录 [短信控制台] 查看
-        req.TemplateId = "1220844"
+        req.TemplateId = template_id
         # 模板参数: 若无模板参数，则设置为空
         req.TemplateParamSet = data
 
@@ -82,16 +84,16 @@ def send(mobile, data):
         resp = client.SendSms(req)
 
         # 输出json格式的字符串回包
-        print(resp.to_json_string(indent=2))
+        return resp
 
     except TencentCloudSDKException as err:
-        print(err)
+        return err
 
 
 def send_fake(mobile, data):
     # time.sleep(5)
-    print(f'{mobile}: {data}')
+    return f'{mobile}: {data}'
 
 
 if __name__ == '__main__':
-    send('18382487801', ['123456', '5'])
+    send('18300000000', ['123456', '5'], '1220849')

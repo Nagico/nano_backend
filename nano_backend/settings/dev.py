@@ -16,9 +16,9 @@ import os
 import sys
 import datetime
 
-MYSQL_HOST = '192.168.239.128'
-REDIS_HOST = '192.168.239.128'
-FDFS_HOST = '192.168.239.128'
+MYSQL_HOST = os.environ.get('MYSQL_HOST', '192.168.239.128')
+REDIS_HOST = os.environ.get('REDIS_HOST', '192.168.239.128')
+FDFS_HOST = os.environ.get('FDFS_HOST', '192.168.239.128')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -31,17 +31,18 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))  # 新增导包路径
 SECRET_KEY = 'django-insecure-186w)w_wu3s_%_0#@v3l357hb^jy$j5sj6pc1iw0m46$)74k_*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
+    '*',
 ]
-
 
 # Application definition
 
 # 注册应用
 INSTALLED_APPS = [
+    'simpleui',  # admin ui
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -92,7 +93,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'nano_backend.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -106,7 +106,6 @@ DATABASES = {
         'NAME': 'nano'  # 数据库名字
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -126,7 +125,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -140,11 +138,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
 
 # Redis
 CACHES = {
@@ -178,8 +177,11 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,  # 是否禁用已经存在的日志器
     'formatters': {  # 日志信息显示的格式
-        'verbose': {
+        'standard': {
             'format': '%(levelname)s %(asctime)s %(module)s %(lineno)d %(message)s'
+        },
+        'verbose': {
+            'format': '%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(levelname)s]- %(message)s'
         },
         'simple': {
             'format': '%(levelname)s %(module)s %(lineno)d %(message)s'
@@ -205,10 +207,75 @@ LOGGING = {
             'backupCount': 10,
             'formatter': 'verbose'
         },
+        'animes': {  # 向文件中输出日志
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), "logs/animes.log"),  # 日志文件的位置
+            'maxBytes': 300 * 1024 * 1024,
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+        'photos': {  # 向文件中输出日志
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), "logs/photos.log"),  # 日志文件的位置
+            'maxBytes': 300 * 1024 * 1024,
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+        'places': {  # 向文件中输出日志
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), "logs/places.log"),  # 日志文件的位置
+            'maxBytes': 300 * 1024 * 1024,
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+        'users': {  # 向文件中输出日志
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), "logs/users.log"),  # 日志文件的位置
+            'maxBytes': 300 * 1024 * 1024,
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+        'verifications': {  # 向文件中输出日志
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), "logs/verifications.log"),  # 日志文件的位置
+            'maxBytes': 300 * 1024 * 1024,
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
     },
     'loggers': {  # 日志器
-        'django': {  # 定义了一个名为django的日志器
+        'nano': {  # 定义了一个名为django的日志器
             'handlers': ['console', 'file'],  # 可以同时向终端与文件中输出日志
+            'propagate': True,  # 是否继续传递日志信息
+            'level': 'INFO',  # 日志器接收的最低日志级别
+        },
+        'animes': {
+            'handlers': ['console', 'animes'],  # 可以同时向终端与文件中输出日志
+            'propagate': True,  # 是否继续传递日志信息
+            'level': 'INFO',  # 日志器接收的最低日志级别
+        },
+        'photos': {
+            'handlers': ['console', 'photos'],  # 可以同时向终端与文件中输出日志
+            'propagate': True,  # 是否继续传递日志信息
+            'level': 'INFO',  # 日志器接收的最低日志级别
+        },
+        'places': {
+            'handlers': ['console', 'places'],  # 可以同时向终端与文件中输出日志
+            'propagate': True,  # 是否继续传递日志信息
+            'level': 'INFO',  # 日志器接收的最低日志级别
+        },
+        'users': {
+            'handlers': ['console', 'users'],  # 可以同时向终端与文件中输出日志
+            'propagate': True,  # 是否继续传递日志信息
+            'level': 'INFO',  # 日志器接收的最低日志级别
+        },
+        'verifications': {
+            'handlers': ['console', 'verifications'],  # 可以同时向终端与文件中输出日志
             'propagate': True,  # 是否继续传递日志信息
             'level': 'INFO',  # 日志器接收的最低日志级别
         },
@@ -251,7 +318,6 @@ CORS_ORIGIN_WHITELIST = (
 
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
 
-
 # JWT(new)
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
@@ -281,3 +347,38 @@ FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
 
 # Avatar
 DEFAULT_AVATAR_PATH = f'group1/M00/00/00/wKjvgGGoiV-AETMXAAAMK5bwTxs200.jpg'
+
+# admin
+SIMPLEUI_DEFAULT_THEME = 'ant.design.css'
+
+SIMPLEUI_CONFIG = {
+    'system_keep': False,
+    'menus': [
+        {
+            'name': 'Nano',
+            'icon': 'fas fa-server',
+            'models': [
+                {
+                    'name': 'Anime 番剧',
+                    'icon': 'fas fa-video',
+                    'url': 'animes/anime/'
+                },
+                {
+                    'name': 'Place 地点',
+                    'icon': 'fas fa-map',
+                    'url': 'places/place/'
+                },
+                {
+                    'name': 'Photo 照片',
+                    'icon': 'fas fa-camera',
+                    'url': 'photos/photo/'
+                }
+            ],
+        },
+        {
+            'name': 'User 用户',
+            'icon': 'fas fa-user',
+            'url': 'users/user/'
+        }
+    ]
+}

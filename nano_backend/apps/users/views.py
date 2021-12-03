@@ -56,15 +56,23 @@ class UserDetailViewSet(RetrieveModelMixin,
         obj = self.get_queryset().get(id=self.request.user.id)  # 从jwt鉴权中获取当前登录用户的uid
         if obj is None:
             raise NotFound('User not found', code='user_not_found')
-
         return obj
+
+    def retrieve(self, request, *args, **kwargs):
+        logger.info(f'[user/] get private user {request.user} info')  # 记录日志
+        return super().retrieve(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         """
         支持部分更新
         """
         kwargs['partial'] = True
+        logger.info(f'[user/] update private user {request.user} info: {request.data}')  # 记录日志
         return super().update(request, *args, **kwargs)
+
+    def perform_destroy(self, instance):
+        logger.info(f'[user/] delete private user {self.request.user} info')  # 记录日志
+        super().perform_destroy(instance)
 
 
 class UserAnimeCollectionViewSet(GenericViewSet):
@@ -84,6 +92,7 @@ class UserAnimeCollectionViewSet(GenericViewSet):
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
+        logger.info(f'[user/anime] get user {request.user} anime collection list: {serializer.data}')
         return Response(serializer.data)
 
 
@@ -104,6 +113,7 @@ class UserPlaceCollectionViewSet(GenericViewSet):
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
+        logger.info(f'[user/place] get user {request.user} place collection list: {serializer.data}')
         return Response(serializer.data)
 
 
@@ -115,6 +125,11 @@ class UserInfoViewSet(RetrieveModelMixin, GenericViewSet):
     serializer_class = UserInfoSerializer
     permission_classes = [AllowAny]  # 允许任何人
 
+    def retrieve(self, request, *args, **kwargs):
+        logger.info(f'[user/{self.kwargs["pk"]}] get public user info: {request.user}')
+        return super().retrieve(request, *args, **kwargs)
+
+
 
 class LoginTokenObtainPairView(TokenObtainPairView):
     """
@@ -122,12 +137,20 @@ class LoginTokenObtainPairView(TokenObtainPairView):
     """
     serializer_class = LoginTokenObtainPairSerializer  # 指定自定义的序列化器，校验密码
 
+    def post(self, request, *args, **kwargs):
+        logger.info(f'[user/login] get user {request.user} token')  # 记录日志
+        return super().post(request, *args, **kwargs)
+
 
 class RegisterView(CreateAPIView):
     """
     用户注册
     """
     serializer_class = CreateUserSerializer
+
+    def post(self, request, *args, **kwargs):
+        logger.info(f'[user/register] create user {request.data}')  # 记录日志
+        return super().post(request, *args, **kwargs)
 
 
 class UsernameCountView(APIView):
@@ -144,7 +167,7 @@ class UsernameCountView(APIView):
             'username': username,
             'count': count
         }
-
+        logger.info(f'[user/username/count] get username count: {data}')
         return Response(data)
 
 
@@ -162,5 +185,5 @@ class MobileCountView(APIView):
             'mobile': mobile,
             'count': count
         }
-
+        logger.info(f'[user/mobile/count] get mobile count: {data}')
         return Response(data)

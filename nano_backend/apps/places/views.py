@@ -1,3 +1,5 @@
+import logging
+
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
@@ -14,6 +16,8 @@ from .filters import PlaceFilter
 from .models import Place
 from .serializers import PlaceDetailsSerializer
 
+logger = logging.getLogger(__name__)
+
 
 class PlaceViewSet(ModelViewSet):
     serializer_class = PlaceDetailsSerializer
@@ -29,7 +33,16 @@ class PlaceViewSet(ModelViewSet):
         支持部分更新
         """
         kwargs['partial'] = True
+        logger.info(f'[place/] user {request.user} update place: {request.data}')
         return super().update(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        logger.info(f'[place/{kwargs["pk"]}/] user {request.user} create place: {request.data}')
+        return super().create(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        logger.info(f'[anime/{kwargs["pk"]}/] user {request.user} delete place')
+        return super().destroy(request, *args, **kwargs)
 
     def get_queryset(self):
         """
@@ -59,7 +72,8 @@ class PlaceViewSet(ModelViewSet):
                 photo = Place.objects.get(pk=self.kwargs['pk'])
                 anime = photo.anime_id
         if anime:  # 更新贡献者
-            anime.contributor.add(User.objects.get(pk=2))
+            anime.contributor.add(self.request.user)
+            logger.info(f'[anime/{anime.id}/] add contributor: {self.request.user}')
             anime.save()
 
     def perform_create(self, serializer):
@@ -85,10 +99,12 @@ class PlaceViewSet(ModelViewSet):
             place.collection_count += 1
             user_place_collection.save()
             place.save()
+            logger.info(f'[place/{pk}/collection] add collection: {request.user}')
             return Response(status=status.HTTP_201_CREATED)
         elif request.method == 'DELETE':  # 删除
             user_place_collection = UserPlaceCollection.objects.get(user=user, place=place)
             place.collection_num -= 1
             user_place_collection.delete()
             place.save()
+            logger.info(f'[place/{pk}/collection] delete collection: {request.user}')
             return Response(status=status.HTTP_204_NO_CONTENT)

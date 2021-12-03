@@ -1,5 +1,6 @@
 # rsa 加解密
 import base64
+import getpass
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5 as PKCS1_cipher
 from django_redis import get_redis_connection
@@ -47,7 +48,6 @@ class Crypto:
 
 if __name__ == '__main__':
     c = Crypto('../../keys/pub.key', '../../keys/pri.key')
-    text = '123456789'
+    text = input()
     print(c.encrypt(text))
     print(c.encrypt(text))
-    print(c.decrypt(c.encrypt(text)))
