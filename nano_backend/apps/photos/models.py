@@ -30,5 +30,5 @@ class Photo(models.Model):
     class Meta:
         app_label = 'photos'
         db_table = 'tb_photo'
-        verbose_name = '地点信息'
+        verbose_name = '照片信息'
         verbose_name_plural = verbose_name

@@ -37,11 +37,12 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
-
 # Application definition
 
 # 注册应用
 INSTALLED_APPS = [
+    'simpleui',  # admin ui
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -92,7 +93,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'nano_backend.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -106,7 +106,6 @@ DATABASES = {
         'NAME': 'nano'  # 数据库名字
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -126,7 +125,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -139,7 +137,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -319,7 +316,6 @@ CORS_ORIGIN_WHITELIST = (
 
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
 
-
 # JWT(new)
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
@@ -349,3 +345,36 @@ FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
 
 # Avatar
 DEFAULT_AVATAR_PATH = f'group1/M00/00/00/wKjvgGGoiV-AETMXAAAMK5bwTxs200.jpg'
+
+# admin
+SIMPLEUI_CONFIG = {
+    'system_keep': False,
+    'menus': [
+        {
+            'name': 'Nano',
+            'icon': 'fas fa-server',
+            'models': [
+                {
+                    'name': 'Anime 番剧',
+                    'icon': 'fas fa-video',
+                    'url': 'animes/anime/'
+                },
+                {
+                    'name': 'Place 地点',
+                    'icon': 'fas fa-map',
+                    'url': 'places/place/'
+                },
+                {
+                    'name': 'Photo 照片',
+                    'icon': 'fas fa-camera',
+                    'url': 'photos/photo/'
+                }
+            ],
+        },
+        {
+            'name': 'User 用户',
+            'icon': 'fas fa-user',
+            'url': 'users/user/'
+        }
+    ]
+}

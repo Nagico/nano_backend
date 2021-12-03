@@ -10,3 +10,4 @@ py3Fdfs==2.2.0
 pycryptodome==3.11.0
 redis==4.0.2
 tencentcloud_sdk_python==3.0.536
+django-simpleui
