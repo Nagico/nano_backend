@@ -20,6 +20,7 @@ services:
   django:
       build:
         context: ./
+      env_file: .env # ENV
       volumes: #项目数据持久化配置---包括项目、uwsgi配置文件
         - ./:/etc/uwsgi/nano_backend:rw
       restart: always #系统重启后容器自动启动
@@ -34,8 +35,6 @@ services:
     image: redis:latest
     container_name: redis
     restart: always
-    ports:
-      - "6379:6379"
     networks:
       net-django:
         ipv4_address: 10.10.2.5

@@ -11,3 +11,7 @@ pycryptodome==3.11.0
 redis==4.0.2
 tencentcloud_sdk_python==3.0.536
 django-simpleui
+uwsgi
+django-cors-headers
+mysqlclient
+
