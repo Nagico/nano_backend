@@ -54,9 +54,8 @@ class UserSerializer(serializers.ModelSerializer):
         """
         if hasattr(attrs, 'password') and hasattr(attrs, 'password2'):
             # rsa 解密
-            c = Crypto()
-            password = c.decrypt(attrs['password'])
-            password2 = c.decrypt(attrs['password2'])
+            password = attrs['password']
+            password2 = attrs['password2']
 
             if password != password2:
                 raise serializers.ValidationError(detail='Password does not match', code='password_not_match')
@@ -102,12 +101,6 @@ class LoginTokenObtainPairSerializer(TokenObtainPairSerializer):
     """
     登录获取token序列化器
     """
-    def validate_password(self, value):
-        """
-        rsa 解密
-        """
-        c = Crypto()
-        return c.decrypt(value)
 
     def validate(self, attrs):
         data = super().validate(attrs)
@@ -179,9 +172,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
         校验密码与短信校验码
         """
         # 判断两次密码是否一致
-        c = Crypto()
-        attrs['password'] = c.decrypt(attrs['password'])
-        attrs['password2'] = c.decrypt(attrs['password2'])
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError('两个密码不一致', code='password_not_match')
 

@@ -1,7 +1,10 @@
+import {hex_md5} from './md5.js';
+
 if (parent.callback) {
     //如果是在子框架内就把首页刷新
     parent.callback();
 }
+
 var loginApp = new Vue({
     el: '.login-main',
     data: {
@@ -17,6 +20,7 @@ var loginApp = new Vue({
                 this.loading = false;
                 return ;
             }
+            this.password = hex_md5(this.password);
             this.$nextTick(function () {
                 document.getElementById('login-form').submit();
             });
