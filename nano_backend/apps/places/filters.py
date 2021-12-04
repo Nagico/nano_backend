@@ -11,7 +11,7 @@ class PlaceFilter(FilterSet):
 
     id = django_filters.NumberFilter(field_name='id', lookup_expr='exact')
     name = django_filters.CharFilter(field_name='name', lookup_expr='icontains')
-    address = django_filters.CharFilter(field_name='address', lookup_expr='icontains')
+    city = django_filters.CharFilter(field_name='city', lookup_expr='icontains')
     anime_id = django_filters.NumberFilter(field_name='anime_id', lookup_expr='exact')
     create_user = django_filters.NumberFilter(field_name='create_user', lookup_expr='exact')
     is_public = django_filters.BooleanFilter(field_name='is_public', lookup_expr='exact')
