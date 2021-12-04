@@ -127,7 +127,7 @@ class PlaceViewSet(ModelViewSet):
             user_place_collection.delete()
             place.save()
             logger.info(f'[place/{pk}/collection] delete collection: {request.user}')
-            return Response({'is_collected': False}, status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         # 查询
         elif request.method == 'GET':
             is_collected = UserPlaceCollection.objects.filter(user=user, place=place).exists()
