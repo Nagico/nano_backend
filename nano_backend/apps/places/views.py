@@ -98,7 +98,7 @@ class PlaceViewSet(ModelViewSet):
         self.update_contributor()
         serializer.save()
 
-    @action(methods=['post', 'delete'], detail=True)
+    @action(methods=['get', 'post', 'delete'], detail=True)
     def collection(self, request, pk=None):
         """
         place 收藏增删
@@ -109,16 +109,26 @@ class PlaceViewSet(ModelViewSet):
             raise AuthenticationFailed('用户未登录', code='not_authenticated')
 
         if request.method == 'POST':  # 添加
+            if UserPlaceCollection.objects.filter(user=user, place=place).exists():
+                raise PermissionDenied('已收藏', code='already_collected')
+
             user_place_collection = UserPlaceCollection(user=user, place=place)
             place.collection_count += 1
             user_place_collection.save()
             place.save()
             logger.info(f'[place/{pk}/collection] add collection: {request.user}')
-            return Response(status=status.HTTP_201_CREATED)
+            return Response({'is_collected': 'true'}, status=status.HTTP_201_CREATED)
         elif request.method == 'DELETE':  # 删除
+            if not UserPlaceCollection.objects.filter(user=user, place=place).exists():
+                raise PermissionDenied('未收藏', code='not_collected')
+
             user_place_collection = UserPlaceCollection.objects.get(user=user, place=place)
             place.collection_num -= 1
             user_place_collection.delete()
             place.save()
             logger.info(f'[place/{pk}/collection] delete collection: {request.user}')
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({'is_collected': 'false'}, status=status.HTTP_204_NO_CONTENT)
+        # 查询
+        elif request.method == 'GET':
+            is_collected = UserPlaceCollection.objects.filter(user=user, place=place).exists()
+            return Response({'is_collected': is_collected}, status=status.HTTP_200_OK)

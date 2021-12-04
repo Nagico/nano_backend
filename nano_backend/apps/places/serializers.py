@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ListSerializer
 
-import users.models
+from users.models import UserPlaceCollection
 from nano_backend.utils.serializers import LimitedListSerializer
 from photos.serializers import PhotoLimitSerializer
 from .models import Place
@@ -12,6 +12,7 @@ class PlaceDetailsSerializer(ModelSerializer):
     place 详细信息
     """
     photos = PhotoLimitSerializer(label='图片预览', many=True, read_only=True)  # 嵌套序列化器
+    is_collected = serializers.SerializerMethodField(label='是否收藏')
 
     class Meta:
         model = Place
@@ -26,6 +27,17 @@ class PlaceDetailsSerializer(ModelSerializer):
         attrs['contributor'] = [self.context['request'].user]
         return attrs
 
+    def get_is_collected(self, obj):
+        """
+        是否收藏
+        """
+        user = self.context['request'].user  # 获取当前用户
+        if not user.is_authenticated:  # 当前用户未登录
+            return False
+        place = self.instance
+        if UserPlaceCollection.objects.filter(user=user, place=place).exists():
+            return True
+        return False
 
 class PlaceInfoSerializer(ModelSerializer):
     """

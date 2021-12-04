@@ -86,7 +86,7 @@ class AnimeViewSet(ModelViewSet):
         logger.info(f'[anime/{kwargs["pk"]}/] user {request.user} delete anime')
         return super().destroy(request, *args, **kwargs)
 
-    @action(methods=['post', 'delete'], detail=True)
+    @action(methods=['get', 'post', 'delete'], detail=True)
     def collection(self, request, pk=None):
         """
         anime 收藏增删
@@ -98,18 +98,27 @@ class AnimeViewSet(ModelViewSet):
 
         # 添加
         if request.method == 'POST':
+            if UserAnimeCollection.objects.filter(user=user, anime=anime).exists():
+                raise PermissionDenied('已收藏', code='already_collected')
+
             user_anime_collection = UserAnimeCollection(user=user, anime=anime)  # 联合表添加
             anime.collection_num += 1
             user_anime_collection.save()
             anime.save()
             logger.info(f'[anime/{pk}/] user {user} add anime to collection')
-            return Response(status=status.HTTP_201_CREATED)
+            return Response({'is_collected': 'true'}, status=status.HTTP_201_CREATED)
         # 删除
         elif request.method == 'DELETE':
-            user_anime_collection = UserAnimeCollection.objects.filter(user=user, anime=anime)  # 联合表删除
+            if not UserAnimeCollection.objects.filter(user=user, anime=anime).exists():
+                raise PermissionDenied('未收藏', code='not_collected')
+
+            user_anime_collection = UserAnimeCollection.objects.get(user=user, anime=anime)  # 联合表删除
             anime.collection_num -= 1
             user_anime_collection.delete()
             anime.save()
             logger.info(f'[anime/{pk}/] user {user} delete anime from collection')
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
+            return Response({'is_collected': 'false'}, status=status.HTTP_204_NO_CONTENT)
+        # 查询
+        elif request.method == 'GET':
+            is_collected = UserAnimeCollection.objects.filter(user=user, anime=anime).exists()
+            return Response({'is_collected': is_collected}, status=status.HTTP_200_OK)
