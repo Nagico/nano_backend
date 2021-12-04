@@ -106,7 +106,7 @@ class AnimeViewSet(ModelViewSet):
             user_anime_collection.save()
             anime.save()
             logger.info(f'[anime/{pk}/] user {user} add anime to collection')
-            return Response({'is_collected': 'true'}, status=status.HTTP_201_CREATED)
+            return Response({'is_collected': True}, status=status.HTTP_201_CREATED)
         # 删除
         elif request.method == 'DELETE':
             if not UserAnimeCollection.objects.filter(user=user, anime=anime).exists():
@@ -117,7 +117,7 @@ class AnimeViewSet(ModelViewSet):
             user_anime_collection.delete()
             anime.save()
             logger.info(f'[anime/{pk}/] user {user} delete anime from collection')
-            return Response({'is_collected': 'false'}, status=status.HTTP_204_NO_CONTENT)
+            return Response({'is_collected': False}, status=status.HTTP_204_NO_CONTENT)
         # 查询
         elif request.method == 'GET':
             is_collected = UserAnimeCollection.objects.filter(user=user, anime=anime).exists()

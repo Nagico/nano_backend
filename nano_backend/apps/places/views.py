@@ -117,7 +117,7 @@ class PlaceViewSet(ModelViewSet):
             user_place_collection.save()
             place.save()
             logger.info(f'[place/{pk}/collection] add collection: {request.user}')
-            return Response({'is_collected': 'true'}, status=status.HTTP_201_CREATED)
+            return Response({'is_collected': True}, status=status.HTTP_201_CREATED)
         elif request.method == 'DELETE':  # 删除
             if not UserPlaceCollection.objects.filter(user=user, place=place).exists():
                 raise PermissionDenied('未收藏', code='not_collected')
@@ -127,7 +127,7 @@ class PlaceViewSet(ModelViewSet):
             user_place_collection.delete()
             place.save()
             logger.info(f'[place/{pk}/collection] delete collection: {request.user}')
-            return Response({'is_collected': 'false'}, status=status.HTTP_204_NO_CONTENT)
+            return Response({'is_collected': False}, status=status.HTTP_204_NO_CONTENT)
         # 查询
         elif request.method == 'GET':
             is_collected = UserPlaceCollection.objects.filter(user=user, place=place).exists()
