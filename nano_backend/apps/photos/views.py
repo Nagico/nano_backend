@@ -36,7 +36,7 @@ class PhotoViewSet(ModelViewSet):
         if user.is_authenticated:  # 用户已登录
             return Photo.objects.filter(Q(create_user=user) | Q(is_public=True))
         else:  # 用户未登录
-            return Photo.objects.filter(is_public=True)
+            return Photo.objects.filter(is_public=True, is_approved=True)
 
     def create(self, request, *args, **kwargs):
         """
