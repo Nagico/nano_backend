@@ -4,6 +4,7 @@ from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -32,15 +33,28 @@ class PlaceViewSet(ModelViewSet):
         """
         支持部分更新
         """
+        if not request.user.is_authenticated:
+            raise AuthenticationFailed('用户未登录', code='not_authenticated')
+        if request.user != Place.objects.get(pk=kwargs['pk']).create_user:
+            raise PermissionDenied('该用户没有权限', code='permission_denied')
+
         kwargs['partial'] = True
         logger.info(f'[place/] user {request.user} update place: {request.data}')
         return super().update(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise AuthenticationFailed('用户未登录', code='not_authenticated')
+
         logger.info(f'[place/{kwargs["pk"]}/] user {request.user} create place: {request.data}')
         return super().create(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise AuthenticationFailed('用户未登录', code='not_authenticated')
+        if request.user != Anime.objects.get(pk=kwargs['pk']).create_user:
+            raise PermissionDenied('该用户没有权限', code='permission_denied')
+
         logger.info(f'[anime/{kwargs["pk"]}/] user {request.user} delete place')
         return super().destroy(request, *args, **kwargs)
 

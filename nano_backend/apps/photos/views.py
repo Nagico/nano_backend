@@ -2,6 +2,7 @@ import logging
 
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.exceptions import AuthenticationFailed, PermissionDenied
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet
@@ -41,6 +42,9 @@ class PhotoViewSet(ModelViewSet):
         """
         创建照片
         """
+        if not request.user.is_authenticated:
+            raise AuthenticationFailed('用户未登录', code='not_authenticated')
+
         logger.info(f'[photo/] user {self.request.user} create: {request.data}')
         return super().create(request, *args, **kwargs)
 
@@ -48,6 +52,11 @@ class PhotoViewSet(ModelViewSet):
         """
         更新照片
         """
+        if not request.user.is_authenticated:
+            raise AuthenticationFailed('用户未登录', code='not_authenticated')
+        if request.user != Photo.objects.get(pk=kwargs['pk']).create_user:
+            raise PermissionDenied('该用户没有权限', code='permission_denied')
+
         kwargs['partial'] = True
         logger.info(f'[photo/{self.kwargs["pk"]}/] user {self.request.user} update: {request.data}')
         return super().update(request, *args, **kwargs)
@@ -56,6 +65,11 @@ class PhotoViewSet(ModelViewSet):
         """
         删除照片
         """
+        if not request.user.is_authenticated:
+            raise AuthenticationFailed('用户未登录', code='not_authenticated')
+        if request.user != Photo.objects.get(pk=kwargs['pk']).create_user:
+            raise PermissionDenied('该用户没有权限', code='permission_denied')
+
         logger.info(f'[photo/{self.kwargs["pk"]}/] user {self.request.user} destroy')
         return super().destroy(request, *args, **kwargs)
 
