@@ -1,4 +1,7 @@
-import {hex_md5} from './md5.js';
+function addScript(url){
+    document.write("<script language=javascript src="+url+"></script>");
+}
+addScript('./md5.js')
 
 if (parent.callback) {
     //如果是在子框架内就把首页刷新
