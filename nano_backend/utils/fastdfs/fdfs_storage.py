@@ -1,4 +1,5 @@
 import io
+import logging
 import os
 
 from PIL import Image
@@ -6,6 +7,8 @@ from django.conf import settings
 from django.core.files.storage import Storage
 from django.utils.deconstruct import deconstructible
 from fdfs_client.client import get_tracker_conf, Fdfs_client
+
+logger = logging.getLogger('fastdfs')
 
 
 @deconstructible
@@ -57,7 +60,19 @@ class FastDFSStorage(Storage):
         if ret.get("Status") != "Upload successed.":
             raise Exception("upload file failed")
         file_name = ret.get("Remote file_id")
+        logger.info(f'upload file success: {file_name}, info: {ret}')
         return file_name.decode()
+
+    def delete(self, remote_file_id):
+        client = Fdfs_client(self.client_conf)
+        try:
+            ret_delete = client.delete_file(remote_file_id)
+            logger.info(f'delete file success: {remote_file_id}')
+            return ret_delete
+
+        except Exception as e:
+            logger.warning(f'delete file failed: {remote_file_id}, err: {e}')
+            return None
 
     def url(self, name):
         """
@@ -89,7 +104,7 @@ class FastDFSAvatarStorage(FastDFSStorage):
         image = Image.open(content.file)
 
         # 标准化图片宽度
-        if settings.AVATAR_BASE_WIDTH:
+        if hasattr(settings, 'AVATAR_BASE_WIDTH') and image.width > settings.AVATAR_BASE_WIDTH:
             base_width = settings.AVATAR_BASE_WIDTH
             w_percent = base_width / float(image.size[0])
             h_size = int(float(image.size[1]) * float(w_percent))
@@ -99,6 +114,7 @@ class FastDFSAvatarStorage(FastDFSStorage):
         new_image = io.BytesIO()
         image = image.convert('RGB')
         image.save(new_image, format='JPEG')
+        new_image.seek(0)  # 返回游标到开始位置，因为后面要用到它的内容
         content.file = new_image
         content.content_type = 'image/jpeg'
 

@@ -247,6 +247,14 @@ LOGGING = {
             'backupCount': 10,
             'formatter': 'verbose'
         },
+        'fastdfs': {  # 向文件中输出日志
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), "logs/fastdfs.log"),  # 日志文件的位置
+            'maxBytes': 300 * 1024 * 1024,
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
     },
     'loggers': {  # 日志器
         'nano': {  # 定义了一个名为django的日志器
@@ -275,6 +283,11 @@ LOGGING = {
             'level': 'INFO',  # 日志器接收的最低日志级别
         },
         'verifications': {
+            'handlers': ['console', 'verifications'],  # 可以同时向终端与文件中输出日志
+            'propagate': True,  # 是否继续传递日志信息
+            'level': 'INFO',  # 日志器接收的最低日志级别
+        },
+        'fastdfs': {
             'handlers': ['console', 'verifications'],  # 可以同时向终端与文件中输出日志
             'propagate': True,  # 是否继续传递日志信息
             'level': 'INFO',  # 日志器接收的最低日志级别
@@ -359,7 +372,7 @@ SIMPLEUI_CONFIG = {
             'icon': 'fas fa-server',
             'models': [
                 {
-                    'name': 'Anime 番剧',
+                    'name': 'Anime 作品',
                     'icon': 'fas fa-video',
                     'url': 'animes/anime/'
                 },

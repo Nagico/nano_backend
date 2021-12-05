@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django_redis import get_redis_connection
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import PasswordField, TokenObtainPairSerializer
-from rest_framework_simplejwt.settings import api_settings
+from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from animes.serializers import AnimeInfoSerializer
@@ -42,7 +42,7 @@ class UserSerializer(serializers.ModelSerializer):
         if value.size < 1024:  # 头像文件小于1KB
             raise serializers.ValidationError(detail='Avatar is smaller than 1KB', code='avatar_too_small')
 
-        if self.instance.avatar != 'media/avatar/default.jpg':  # 已存在头像文件
+        if self.instance.avatar != settings.DEFAULT_AVATAR_PATH:  # 已存在头像文件
             self.instance.avatar.delete()  # 删除原头像文件
 
         return value
