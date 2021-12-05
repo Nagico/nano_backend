@@ -46,7 +46,7 @@ class PlaceViewSet(ModelViewSet):
         if not request.user.is_authenticated:
             raise AuthenticationFailed('用户未登录', code='not_authenticated')
 
-        logger.info(f'[place/{kwargs["pk"]}/] user {request.user} create place: {request.data}')
+        logger.info(f'[place/] user {request.user} create place: {request.data}')
         return super().create(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
