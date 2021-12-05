@@ -64,9 +64,9 @@ class FastDFSStorage(Storage):
         return file_name.decode()
 
     def delete(self, remote_file_id):
-        client = Fdfs_client(self.client_conf)
+        client = Fdfs_client(self.tracker_conf)
         try:
-            ret_delete = client.delete_file(remote_file_id)
+            ret_delete = client.delete_file(str.encode(remote_file_id))
             logger.info(f'delete file success: {remote_file_id}')
             return ret_delete
 
