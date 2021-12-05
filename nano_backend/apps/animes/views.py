@@ -12,6 +12,7 @@ from django.db.models import Q
 from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 
+from nano_backend.utils.auth import check_permission
 from users.models import UserAnimeCollection
 from .filters import AnimeFilter
 from .models import Anime
@@ -58,8 +59,9 @@ class AnimeViewSet(ModelViewSet):
         """
         创建动画
         """
-        if not request.user.is_authenticated:
-            raise AuthenticationFailed('用户未登录', code='not_authenticated')
+
+        check_permission(self)
+
         logger.info(f'[anime/] user {request.user} create anime: {request.data}')
         return super().create(request, *args, **kwargs)
 
@@ -67,11 +69,10 @@ class AnimeViewSet(ModelViewSet):
         """
         更新动画
         """
+
+        check_permission(self)
+
         kwargs['partial'] = True
-        if not request.user.is_authenticated:
-            raise AuthenticationFailed('用户未登录', code='not_authenticated')
-        if request.user != Anime.objects.get(pk=kwargs['pk']).create_user:
-            raise PermissionDenied('该用户没有权限', code='permission_denied')
         logger.info(f'[anime/{kwargs["pk"]}/] user {request.user} update anime: {request.data}')
         return super().update(request, *args, **kwargs)
 
@@ -79,10 +80,9 @@ class AnimeViewSet(ModelViewSet):
         """
         删除动画
         """
-        if not request.user.is_authenticated:
-            raise AuthenticationFailed('用户未登录', code='not_authenticated')
-        if request.user != Anime.objects.get(pk=kwargs['pk']).create_user:
-            raise PermissionDenied('该用户没有权限', code='permission_denied')
+
+        check_permission(self)
+
         logger.info(f'[anime/{kwargs["pk"]}/] user {request.user} delete anime')
         return super().destroy(request, *args, **kwargs)
 

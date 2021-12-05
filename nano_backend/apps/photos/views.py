@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet
 
 from animes.models import Anime
+from nano_backend.utils.auth import check_permission
 from places.models import Place
 from users.models import User
 from .models import Photo
@@ -42,8 +43,7 @@ class PhotoViewSet(ModelViewSet):
         """
         创建照片
         """
-        if not request.user.is_authenticated:
-            raise AuthenticationFailed('用户未登录', code='not_authenticated')
+        check_permission(self)
 
         logger.info(f'[photo/] user {self.request.user} create: {request.data}')
         return super().create(request, *args, **kwargs)
@@ -52,10 +52,8 @@ class PhotoViewSet(ModelViewSet):
         """
         更新照片
         """
-        if not request.user.is_authenticated:
-            raise AuthenticationFailed('用户未登录', code='not_authenticated')
-        if request.user != Photo.objects.get(pk=kwargs['pk']).create_user:
-            raise PermissionDenied('该用户没有权限', code='permission_denied')
+
+        check_permission(self)
 
         kwargs['partial'] = True
         logger.info(f'[photo/{self.kwargs["pk"]}/] user {self.request.user} update: {request.data}')
@@ -65,10 +63,7 @@ class PhotoViewSet(ModelViewSet):
         """
         删除照片
         """
-        if not request.user.is_authenticated:
-            raise AuthenticationFailed('用户未登录', code='not_authenticated')
-        if request.user != Photo.objects.get(pk=kwargs['pk']).create_user:
-            raise PermissionDenied('该用户没有权限', code='permission_denied')
+        check_permission(self)
 
         logger.info(f'[photo/{self.kwargs["pk"]}/] user {self.request.user} destroy')
         return super().destroy(request, *args, **kwargs)
