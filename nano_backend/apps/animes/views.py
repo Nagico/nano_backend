@@ -76,6 +76,17 @@ class AnimeViewSet(ModelViewSet):
         logger.info(f'[anime/{kwargs["pk"]}/] user {request.user} update anime: {request.data}')
         return super().update(request, *args, **kwargs)
 
+    def perform_update(self, serializer):
+        """
+        更新时删除图片
+        """
+        instance = self.get_object()
+        if 'cover' in serializer.validated_data:
+            instance.cover.delete()
+        if 'cover_small' in serializer.validated_data:
+            instance.cover_small.delete()
+        serializer.save()
+
     def destroy(self, request, *args, **kwargs):
         """
         删除动画
@@ -85,6 +96,14 @@ class AnimeViewSet(ModelViewSet):
 
         logger.info(f'[anime/{kwargs["pk"]}/] user {request.user} delete anime')
         return super().destroy(request, *args, **kwargs)
+
+    def perform_destroy(self, instance):
+        """
+        添加删除图片
+        """
+        instance.cover.delete()
+        instance.cover_small.delete()
+        instance.delete()
 
     @action(methods=['get', 'post', 'delete'], detail=True)
     def collection(self, request, pk=None):

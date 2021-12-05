@@ -59,6 +59,12 @@ class PhotoViewSet(ModelViewSet):
         logger.info(f'[photo/{self.kwargs["pk"]}/] user {self.request.user} update: {request.data}')
         return super().update(request, *args, **kwargs)
 
+    def perform_update(self, serializer):
+        instance = self.get_object()
+        if 'image' in serializer.validated_data:  # 删除旧图片
+            instance.image.delete()
+        serializer.save()
+
     def destroy(self, request, *args, **kwargs):
         """
         删除照片
@@ -67,6 +73,13 @@ class PhotoViewSet(ModelViewSet):
 
         logger.info(f'[photo/{self.kwargs["pk"]}/] user {self.request.user} destroy')
         return super().destroy(request, *args, **kwargs)
+
+    def perform_destroy(self, instance):
+        """
+        删除时删除图片
+        """
+        instance.image.delete()
+        instance.delete()
 
     def update_contributor(self):
         """
