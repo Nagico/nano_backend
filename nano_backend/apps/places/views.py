@@ -52,7 +52,7 @@ class PlaceViewSet(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             raise AuthenticationFailed('用户未登录', code='not_authenticated')
-        if request.user != Anime.objects.get(pk=kwargs['pk']).create_user:
+        if request.user != Place.objects.get(pk=kwargs['pk']).create_user:
             raise PermissionDenied('该用户没有权限', code='permission_denied')
 
         logger.info(f'[anime/{kwargs["pk"]}/] user {request.user} delete place')
