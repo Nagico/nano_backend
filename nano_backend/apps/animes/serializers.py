@@ -37,7 +37,7 @@ class AnimeDetailSerializer(serializers.ModelSerializer):
         user = self.context['request'].user  # 获取当前用户
         if not user.is_authenticated:  # 当前用户未登录
             return False
-        anime = self.instance
+        anime = obj
         if UserAnimeCollection.objects.filter(user=user, anime=anime).exists():
             return True
         return False

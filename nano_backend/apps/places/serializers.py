@@ -34,7 +34,7 @@ class PlaceDetailsSerializer(ModelSerializer):
         user = self.context['request'].user  # 获取当前用户
         if not user.is_authenticated:  # 当前用户未登录
             return False
-        place = self.instance
+        place = obj
         if UserPlaceCollection.objects.filter(user=user, place=place).exists():
             return True
         return False
