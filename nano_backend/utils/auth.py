@@ -11,6 +11,6 @@ def check_permission(view):
     """
     if not view.request.user.is_authenticated:
         raise AuthenticationFailed('用户未登录', code='not_authenticated')
-    if not view.action == 'GET':
+    if not view.action == 'GET' or not view.action == 'POST':
         if view.request.user != view.get_object().create_user:
             raise PermissionDenied('该用户没有权限', code='permission_denied')
