@@ -45,7 +45,7 @@ class PlaceInfoSerializer(ModelSerializer):
     """
     class Meta:
         model = Place
-        fields = ['id', 'name', 'address']
+        fields = ['id', 'name', 'city', 'address']
 
 
 class PlaceLimitSerializer(ModelSerializer):
