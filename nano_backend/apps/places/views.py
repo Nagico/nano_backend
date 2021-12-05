@@ -110,7 +110,7 @@ class PlaceViewSet(ModelViewSet):
                 raise PermissionDenied('已收藏', code='already_collected')
 
             user_place_collection = UserPlaceCollection(user=user, place=place)
-            place.collection_count += 1
+            place.collection_num += 1
             user_place_collection.save()
             place.save()
             logger.info(f'[place/{pk}/collection] add collection: {request.user}')
