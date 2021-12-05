@@ -9,5 +9,5 @@ class LimitedListSerializer(ListSerializer):
     用于外键序列化过滤
     """
     def to_representation(self, data):
-        data = data.filter(Q(is_approved=True) | Q(create_user=User.objects.get(pk=1)))[:20]
+        data = data.filter(Q(is_approved=True) | Q(create_user=self.context['request'].user.id))[:20]
         return super(LimitedListSerializer, self).to_representation(data)
