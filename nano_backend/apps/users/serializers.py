@@ -22,6 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
         exclude = ['is_active', 'is_superuser', 'is_staff', 'date_joined', 'last_login',
                    'first_name', 'last_name', 'groups', 'user_permissions', 'email',
                    'collection_anime', 'collection_place']
+        read_only_fields = ['username', 'mobile']
 
     password = PasswordField(write_only=True)
     password2 = PasswordField(write_only=True)
