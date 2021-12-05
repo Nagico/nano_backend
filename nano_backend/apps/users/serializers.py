@@ -175,9 +175,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError('两个密码不一致', code='password_not_match')
 
-        if not 8 <= len(attrs['password']) <= 20:
-            raise serializers.ValidationError('仅允许8-20个字符的密码', code='password_length_invalid')
-
         # 判断短信验证码是否正确
         redis_conn = get_redis_connection('verify_codes')
         mobile = attrs['mobile']
