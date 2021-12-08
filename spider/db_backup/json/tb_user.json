@@ -1,0 +1,79 @@
+{
+  "RECORDS": [
+    {
+      "id": "1",
+      "password": "pbkdf2_sha256$260000$94qEQ0UWfOG5GeBZzeQ00l$LBrNXmpm5yh/83LH3RA5VxcJsmzJP6ggyIOyVUxzLGI=",
+      "last_login": "8/12/2021 07:12:58.557597",
+      "is_superuser": "1",
+      "username": "nagico",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": "1",
+      "is_active": "1",
+      "date_joined": "3/12/2021 16:58:51.679804",
+      "avatar": "group1/M00/00/00/CgAABGGsRLqAGhlxAAAwv41fuUM043.png",
+      "mobile": "18312341234"
+    },
+    {
+      "id": "4",
+      "password": "pbkdf2_sha256$260000$94qEQ0UWfOG5GeBZzeQ00l$LBrNXmpm5yh/83LH3RA5VxcJsmzJP6ggyIOyVUxzLGI=",
+      "last_login": "3/12/2021 18:04:57.366439",
+      "is_superuser": "1",
+      "username": "test123",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": "1",
+      "is_active": "1",
+      "date_joined": "3/12/2021 17:44:24.037131",
+      "avatar": "group1/M00/00/00/wKjvgGGoiV-AETMXAAAMK5bwTxs200.jpg",
+      "mobile": "18312341235"
+    },
+    {
+      "id": "5",
+      "password": "pbkdf2_sha256$260000$94qEQ0UWfOG5GeBZzeQ00l$LBrNXmpm5yh/83LH3RA5VxcJsmzJP6ggyIOyVUxzLGI=",
+      "last_login": "",
+      "is_superuser": "0",
+      "username": "staff001",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": "1",
+      "is_active": "1",
+      "date_joined": "4/12/2021 05:05:00",
+      "avatar": "group1/M00/00/00/CgAABGGqR96AQ4yeAAAMK5bwTxs776.jpg",
+      "mobile": "18382470000"
+    },
+    {
+      "id": "6",
+      "password": "pbkdf2_sha256$260000$S7kbSk2hdRMr9dxyswFIeC$ens3NkML1zEMhsN/PzxIkOLMgokWgLBX5Iu+sMf9eJY=",
+      "last_login": "",
+      "is_superuser": "0",
+      "username": "test234",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": "0",
+      "is_active": "1",
+      "date_joined": "5/12/2021 03:36:12.780363",
+      "avatar": "group1/M00/00/00/CgAABGGqR96AQ4yeAAAMK5bwTxs776.jpg",
+      "mobile": "18382487801"
+    },
+    {
+      "id": "7",
+      "password": "pbkdf2_sha256$260000$94qEQ0UWfOG5GeBZzeQ00l$LBrNXmpm5yh/83LH3RA5VxcJsmzJP6ggyIOyVUxzLGI=",
+      "last_login": "",
+      "is_superuser": "0",
+      "username": "user001",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": "0",
+      "is_active": "1",
+      "date_joined": "4/12/2021 05:05:00",
+      "avatar": "group1/M00/00/00/CgAABGGqR96AQ4yeAAAMK5bwTxs776.jpg",
+      "mobile": "18382470001"
+    }
+  ]
+}
