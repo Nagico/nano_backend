@@ -7,13 +7,38 @@ from users.models import UserAnimeCollection
 from .models import Anime
 
 
-class AnimeDetailSerializer(serializers.ModelSerializer):
+class AnimeInfoSerializer(serializers.ModelSerializer):
+    """
+    Anime 简要序列化器
+    """
+    is_collected = serializers.SerializerMethodField(label='是否收藏')
+
+    class Meta:
+        model = Anime
+        fields = ['id', 'title_cn', 'cover', 'is_collected']
+
+    def get_is_collected(self, obj):
+        """
+        是否收藏
+        """
+        try:
+            user = self.context['request'].user  # 获取当前用户
+        except:  # 无request信息
+            return False
+        if not user.is_authenticated:  # 当前用户未登录
+            return False
+        anime = obj
+        if UserAnimeCollection.objects.filter(user=user, anime=anime).exists():
+            return True
+        return False
+
+
+class AnimeDetailSerializer(AnimeInfoSerializer):
     """
     Anime 详细序列化器
     """
     places = PlaceLimitSerializer(label='地点预览', many=True, read_only=True)
     photos = PhotoLimitSerializer(label='图片预览', many=True, read_only=True)
-    is_collected = serializers.SerializerMethodField(label='是否收藏')
 
     class Meta:
         model = Anime
@@ -30,26 +55,6 @@ class AnimeDetailSerializer(serializers.ModelSerializer):
 
         return attrs
 
-    def get_is_collected(self, obj):
-        """
-        是否收藏
-        """
-        user = self.context['request'].user  # 获取当前用户
-        if not user.is_authenticated:  # 当前用户未登录
-            return False
-        anime = obj
-        if UserAnimeCollection.objects.filter(user=user, anime=anime).exists():
-            return True
-        return False
-
-
-class AnimeInfoSerializer(serializers.ModelSerializer):
-    """
-    Anime 简要序列化器
-    """
-    class Meta:
-        model = Anime
-        fields = ['id', 'title_cn', 'cover', 'is_collected']
 
 
 class AnimeLimitSerializer(serializers.ModelSerializer):
