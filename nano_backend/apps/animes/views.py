@@ -59,7 +59,7 @@ class AnimeViewSet(ModelViewSet):
         """
         动态获取序列化器
         """
-        if self.request.action == 'list':
+        if self.action == 'list':
             return AnimeInfoSerializer(*args, **kwargs)
         return super().get_serializer(*args, **kwargs)
 
