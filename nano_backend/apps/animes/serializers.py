@@ -11,8 +11,6 @@ class AnimeDetailSerializer(serializers.ModelSerializer):
     """
     Anime 详细序列化器
     """
-    places = PlaceLimitSerializer(label='地点预览', many=True, read_only=True)
-    photos = PhotoLimitSerializer(label='图片预览', many=True, read_only=True)
     is_collected = serializers.SerializerMethodField(label='是否收藏')
 
     class Meta:
