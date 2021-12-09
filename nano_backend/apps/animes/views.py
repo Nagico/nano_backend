@@ -38,7 +38,7 @@ class AnimeViewSet(ModelViewSet):
     filter_backends = [OrderingFilter, DjangoFilterBackend]  # 排序 过滤
 
     ordering_fields = ['id', 'create_time', 'update_time', 'title', 'title_cn', 'is_approved', 'is_public',
-                       'create_user', 'anime_id']  # 排序字段
+                       'create_user', 'collection_num']  # 排序字段
     filterset_class = AnimeFilter  # 自定义过滤器
 
     permission_classes = [AllowAny]  # 允许任何人
