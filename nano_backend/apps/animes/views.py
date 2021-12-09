@@ -16,7 +16,7 @@ from nano_backend.utils.auth import check_permission
 from users.models import UserAnimeCollection
 from .filters import AnimeFilter
 from .models import Anime
-from .serializers import AnimeDetailSerializer
+from .serializers import AnimeDetailSerializer, AnimeInfoSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +54,14 @@ class AnimeViewSet(ModelViewSet):
             return Anime.objects.filter(Q(create_user=user) | Q(is_public=True))
         else:  # 用户未登录
             return Anime.objects.filter(is_public=True, is_approved=True)
+
+    def get_serializer(self, *args, **kwargs):
+        """
+        动态获取序列化器
+        """
+        if self.request.action == 'list':
+            return AnimeInfoSerializer(*args, **kwargs)
+        return super().get_serializer(*args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         """
