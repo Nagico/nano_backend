@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     'animes',  # 番剧
     'places',  # 地点
     'photos',  # 照片
+    'staffs',  # staff
+    'tags',  # 标签
 ]
 
 MIDDLEWARE = [

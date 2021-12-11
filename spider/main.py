@@ -22,14 +22,14 @@ sys.path.insert(0, os.path.abspath(os.path.join(pathname, '../nano_backend')))
 sys.path.insert(0, os.path.abspath(os.path.join(pathname, '../nano_backend/apps')))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'nano_backend.settings.prod'
 
-os.environ['MYSQL_HOST'] = ''
-os.environ['MYSQL_PORT'] = ''
-os.environ['MYSQL_USER'] = ''
-os.environ['MYSQL_PASSWORD'] = ''
-os.environ['MYSQL_DATABASE'] = ''
-os.environ['REDIS_HOST'] = ''
-os.environ['FASTDFS_TRACKER_HOST'] = ''
-os.environ['MEDIA_HOST'] = ''
+os.environ['MYSQL_HOST'] = '42.193.50.174'
+os.environ['MYSQL_PORT'] = '3306'
+os.environ['MYSQL_USER'] = 'nano'
+os.environ['MYSQL_PASSWORD'] = 'nano'
+os.environ['MYSQL_DATABASE'] = 'nano'
+os.environ['REDIS_HOST'] = '127.0.0.1'
+os.environ['FASTDFS_TRACKER_HOST'] = '42.193.50.174'
+os.environ['MEDIA_HOST'] = 'media.nano.nagico.cn'
 os.environ['DEFAULT_AVATAR'] = ''
 
 django.setup()
