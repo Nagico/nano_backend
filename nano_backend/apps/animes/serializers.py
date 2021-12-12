@@ -5,6 +5,7 @@ from nano_backend.utils.serializers import LimitedListSerializer
 from photos.serializers import PhotoLimitSerializer
 from places.serializers import PlaceLimitSerializer
 from staffs.serializers import StaffInfoSerializer
+from tags.serializers import TagSerializer
 from users.models import UserAnimeCollection
 from .models import Anime
 
@@ -49,6 +50,7 @@ class AnimeDetailSerializer(AnimeInfoSerializer):
     actor = StaffInfoSerializer(label='演出', many=True, read_only=True)
     music = StaffInfoSerializer(label='音乐', many=True, read_only=True)
     producer = StaffInfoSerializer(label='动画制作', many=True, read_only=True)
+    tags = TagSerializer(label='标签', many=True, read_only=True)
 
     class Meta:
         model = Anime
