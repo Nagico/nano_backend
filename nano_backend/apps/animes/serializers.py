@@ -42,13 +42,13 @@ class AnimeDetailSerializer(AnimeInfoSerializer):
     places = PlaceLimitSerializer(label='地点预览', many=True, read_only=True)
     photos = PhotoLimitSerializer(label='图片预览', many=True, read_only=True)
     alias = StringRelatedField(label='别名', many=True, read_only=True)
-    director = StaffInfoSerializer(label='导演', read_only=True)
-    original = StaffInfoSerializer(label='原作', read_only=True)
+    director = StaffInfoSerializer(label='导演', many=True, read_only=True)
+    original = StaffInfoSerializer(label='原作', many=True, read_only=True)
     script = StaffInfoSerializer(label='脚本', many=True, read_only=True)
     storyboard = StaffInfoSerializer(label='分镜', many=True, read_only=True)
     actor = StaffInfoSerializer(label='演出', many=True, read_only=True)
-    music = StaffInfoSerializer(label='音乐', read_only=True)
-    producer = StaffInfoSerializer(label='动画制作', read_only=True)
+    music = StaffInfoSerializer(label='音乐', many=True, read_only=True)
+    producer = StaffInfoSerializer(label='动画制作', many=True, read_only=True)
 
     class Meta:
         model = Anime

@@ -35,7 +35,7 @@ os.environ['DEFAULT_AVATAR'] = ''
 
 django.setup()
 
-from animes.models import Anime
+from animes.models import Anime, AnimeAlias
 from places.models import Place
 from photos.models import Photo
 from users.models import User
@@ -278,93 +278,93 @@ if __name__ == "__main__":
         info = extra_info['info']
         soup = BeautifulSoup(info)
 
-        try:
-            air_date = datetime.datetime.strptime(soup.find_all(text=re.compile(r"\d{4}年\d{1,2}月\d{1,2}日"))[0].text,
-                                                  "%Y年%m月%d日")
-            anime.air_date = air_date
-            logger.debug(f'{anime.id} air_date: {air_date}')
-        except:
-            pass
+        # try:
+        #     air_date = datetime.datetime.strptime(soup.find_all(text=re.compile(r"\d{4}年\d{1,2}月\d{1,2}日"))[0].text,
+        #                                           "%Y年%m月%d日")
+        #     anime.air_date = air_date
+        #     logger.debug(f'{anime.id} air_date: {air_date}')
+        # except:
+        #     pass
 
-        tags = []
-        for tag in [_['name'] for _ in extra_info['tags']]:
-            tags.append(Tag.objects.get_or_create(name=tag)[0])
-        anime.tags.set(tags)
-        logger.debug(f'{anime.id} tags: {tags}')
+        # tags = []
+        # for tag in [_['name'] for _ in extra_info['tags']]:
+        #     tags.append(Tag.objects.get_or_create(name=tag)[0])
+        # anime.tags.set(tags)
+        # logger.debug(f'{anime.id} tags: {tags}')
 
-        try:
-            epi_num = int(soup.find_all(text='话数: ')[0].next.text)
-            anime.epi_num = epi_num
-            logger.debug(f'{anime.id} epi_num: {epi_num}')
-        except:
-            pass
+        # try:
+        #     epi_num = int(soup.find_all(text='话数: ')[0].next.text)
+        #     anime.epi_num = epi_num
+        #     logger.debug(f'{anime.id} epi_num: {epi_num}')
+        # except:
+        #     pass
 
-        try:
-            director = soup.find_all(text='导演: ')[0].next.text
-            anime.director = Staff.objects.get_or_create(name=director)[0]
-            logger.debug(f'{anime.id} director: {director}')
-        except:
-            pass
+        # try:
+        #     director = soup.find_all(text='导演: ')[0].next.text
+        #     anime.director.set([Staff.objects.get_or_create(name=director)[0]])
+        #     logger.debug(f'{anime.id} director: {director}')
+        # except:
+        #     pass
+        #
+        # try:
+        #     original = soup.find_all(text='原作: ')[0].next.text
+        #     anime.original.set([Staff.objects.get_or_create(name=original)[0]])
+        #     logger.debug(f'{anime.id} original: {original}')
+        # except:
+        #     pass
 
-        try:
-            original = soup.find_all(text='原作: ')[0].next.text
-            anime.original = Staff.objects.get_or_create(name=original)[0]
-            logger.debug(f'{anime.id} original: {original}')
-        except:
-            pass
+        # try:
+        #     script = soup.find_all(text='脚本: ')[0].parent.parent.text.replace('脚本: ', '').split('、')
+        #     items = []
+        #     for item in script:
+        #         items.append(Staff.objects.get_or_create(name=item)[0])
+        #     anime.script.set(items)
+        #     logger.debug(f'{anime.id} script: {script}')
+        # except:
+        #     pass
 
-        try:
-            script = soup.find_all(text='脚本: ')[0].parent.parent.text.replace('脚本: ', '').split('、')
-            items = []
-            for item in script:
-                items.append(Staff.objects.get_or_create(name=item)[0])
-            anime.script.set(items)
-            logger.debug(f'{anime.id} script: {script}')
-        except:
-            pass
+        # try:
+        #     storyboard = soup.find_all(text='分镜: ')[0].parent.parent.text.replace('分镜: ', '').split('、')
+        #     items = []
+        #     for item in storyboard:
+        #         items.append(Staff.objects.get_or_create(name=item)[0])
+        #     anime.storyboard.set(items)
+        #     logger.debug(f'{anime.id} storyboard: {storyboard}')
+        # except:
+        #     pass
 
-        try:
-            storyboard = soup.find_all(text='分镜: ')[0].parent.parent.text.replace('分镜: ', '').split('、')
-            items = []
-            for item in storyboard:
-                items.append(Staff.objects.get_or_create(name=item)[0])
-            anime.storyboard.set(items)
-            logger.debug(f'{anime.id} storyboard: {storyboard}')
-        except:
-            pass
+        # try:
+        #     actor = soup.find_all(text='演出: ')[0].parent.parent.text.replace('演出: ', '').split('、')
+        #     items = []
+        #     for item in actor:
+        #         items.append(Staff.objects.get_or_create(name=item)[0])
+        #     anime.actor.set(items)
+        #     logger.debug(f'{anime.id} actor: {actor}')
+        # except:
+        #     pass
 
-        try:
-            actor = soup.find_all(text='演出: ')[0].parent.parent.text.replace('演出: ', '').split('、')
-            items = []
-            for item in actor:
-                items.append(Staff.objects.get_or_create(name=item)[0])
-            anime.actor.set(items)
-            logger.debug(f'{anime.id} actor: {actor}')
-        except:
-            pass
+        # try:
+        #     music = soup.find_all(text='音乐: ')[0].next.text
+        #     anime.music.set([Staff.objects.get_or_create(name=music)[0]])
+        #     logger.debug(f'{anime.id} music: {music}')
+        # except:
+        #     pass
+        #
+        # try:
+        #     producer = soup.find_all(text='动画制作: ')[0].next.text
+        #     anime.producer.set([Staff.objects.get_or_create(name=producer)[0]])
+        #     logger.debug(f'{anime.id} producer: {producer}')
+        # except:
+        #     pass
 
-        try:
-            music = soup.find_all(text='音乐: ')[0].next.text
-            anime.music = Staff.objects.get_or_create(name=music)[0]
-            logger.debug(f'{anime.id} music: {music}')
-        except:
-            pass
-
-        try:
-            producer = soup.find_all(text='动画制作: ')[0].next.text
-            anime.producer = Staff.objects.get_or_create(name=producer)[0]
-            logger.debug(f'{anime.id} producer: {producer}')
-        except:
-            pass
-
-        try:
-            website = soup.find_all(text='官方网站: ')[0].next.text
-            anime.website = website
-            logger.debug(f'{anime.id} website: {website}')
-        except:
-            pass
-
-        anime.country = '日本'
+        # try:
+        #     website = soup.find_all(text='官方网站: ')[0].next.text
+        #     anime.website = website
+        #     logger.debug(f'{anime.id} website: {website}')
+        # except:
+        #     pass
+        #
+        # anime.country = '日本'
 
         try:
             alias = []
@@ -372,18 +372,16 @@ if __name__ == "__main__":
             while '别名' in node.text:
                 alias.append(node.text.replace('别名: ', ''))
                 node = node.next_sibling
-            items = []
             for item in alias:
-                items.append(Staff.objects.get_or_create(name=item)[0])
-            anime.alias.set(items)
-            logger.debug(f'{anime.id} alias: {alias}')
+                AnimeAlias.objects.create(title=item, anime=anime)
+                logger.debug(f'{anime.id} alias: {item}')
         except:
             pass
 
-        cover_medium_url = anime_info['images']['common']
-        cover_medium_fdsf = client.upload_by_buffer(down_pic(cover_medium_url), file_ext_name=cover_medium_url.rsplit('.', 1)[1])
-
-        anime.cover_medium = cover_medium_fdsf['Remote file_id'].decode()
+        # cover_medium_url = anime_info['images']['common']
+        # cover_medium_fdsf = client.upload_by_buffer(down_pic(cover_medium_url), file_ext_name=cover_medium_url.rsplit('.', 1)[1])
+        #
+        # anime.cover_medium = cover_medium_fdsf['Remote file_id'].decode()
 
         # clean
         # client.delete_file(cover_medium_fdsf['Remote file_id'])
