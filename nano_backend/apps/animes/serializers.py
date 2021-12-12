@@ -18,7 +18,7 @@ class AnimeInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Anime
-        fields = ['id', 'title_cn', 'cover', 'is_collected']
+        fields = ['id', 'title_cn', 'cover_medium', 'is_collected']
 
     def get_is_collected(self, obj):
         """
