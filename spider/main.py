@@ -6,14 +6,15 @@ import requests
 import re
 
 from zhon.hanzi import punctuation
+from bs4 import BeautifulSoup
 from loguru import logger
 import sys
+import datetime
 import django
 import json
 import urllib.parse
 import cfscrape
 
-from nano_backend.utils.choices import ImageTypeChoice
 logger.add("runtime.log")
 
 pathname = os.path.dirname(os.path.abspath(__file__))
@@ -39,6 +40,9 @@ from places.models import Place
 from photos.models import Photo
 from users.models import User
 from fdfs_client.client import Fdfs_client, get_tracker_conf
+from nano_backend.utils.choices import ImageTypeChoice
+from staffs.models import Staff
+from tags.models import Tag
 
 anime_data = {}
 place_data = {}
@@ -84,6 +88,15 @@ def bangumi():
         json.dump(bangumi_data, f, ensure_ascii=False, indent=4)
         logger.info(f'bangumi_data.json saved')
 
+def get_extra_info_by_bangumi_id(id):
+    logger.info(f'get_extra_info_by_bangumi_id: {id}')
+    url = f'https://cdn.jsdelivr.net/gh/czy0729/Bangumi-Subject@master/data/{id//100}/{id}.json'
+    scraper = cfscrape.create_scraper()
+
+    response = scraper.get(url)
+    data = json.loads(response.text)
+    logger.info(f'fetch_extra_info: {id}')
+    return data
 
 def down_pic(url):
     logger.info(f'down_pic: {url}')
@@ -93,38 +106,7 @@ def down_pic(url):
     return res
 
 
-if __name__ == "__main__":
-
-    tracker_conf = get_tracker_conf('../nano_backend/utils/fastdfs/client.conf')
-    tracker_conf['host_tuple'] = (os.environ.get('FASTDFS_TRACKER_HOST', tracker_conf['host_tuple'][0]),)
-    client = Fdfs_client(tracker_conf)
-
-    user = User.objects.get(id=1)
-
-    with open("anime_data.json", "r", encoding='utf-8') as f:
-        anime_data = json.load(f)
-
-    with open("place_data.json", "r", encoding='utf-8') as f:
-        place_data = json.load(f)
-
-    with open("bangumi_data.json", "r", encoding='utf-8') as f:
-        bangumi_data = json.load(f)
-
-    bangumi_data['4849'] = get_banmugi_info_by_id(891)
-    # client.delete_file(str.encode('group1/M00/00/00/CgAABGGwNniAP95UAACmUZUO3nA227.jpg'))
-    # client.delete_file(str.encode('group1/M00/00/00/CgAABGGwNnmAUgOhAAAE5VdrGvg332.jpg'))
-
-    # with open('file', 'r', encoding='utf-8') as f:
-    #     file_lines = f.readlines()
-    #     for line in file_lines:
-    #         if 'group1/' in line:
-    #             url = line.strip('\n').split(' ')[-1]
-    #             try:
-    #                 client.delete_file(str.encode(url))
-    #                 logger.info(f'delete_file: {url}')
-    #             except:
-    #                 logger.debug('skip')
-
+def create_first():
     flag = False
     for anime_id in anime_data:
         if anime_id == '4903':
@@ -255,3 +237,156 @@ if __name__ == "__main__":
                             # clean
                             # client.delete_file(pic_fdsf['Remote file_id'])
     pass
+
+
+if __name__ == "__main__":
+
+    tracker_conf = get_tracker_conf('../nano_backend/utils/fastdfs/client.conf')
+    tracker_conf['host_tuple'] = (os.environ.get('FASTDFS_TRACKER_HOST', tracker_conf['host_tuple'][0]),)
+    client = Fdfs_client(tracker_conf)
+
+    user = User.objects.get(id=1)
+
+    with open("anime_data.json", "r", encoding='utf-8') as f:
+        anime_data = json.load(f)
+
+    with open("place_data.json", "r", encoding='utf-8') as f:
+        place_data = json.load(f)
+
+    with open("bangumi_data.json", "r", encoding='utf-8') as f:
+        bangumi_data = json.load(f)
+
+    bangumi_data['4849'] = get_banmugi_info_by_id(891)
+    # client.delete_file(str.encode('group1/M00/00/00/CgAABGGwNniAP95UAACmUZUO3nA227.jpg'))
+    # client.delete_file(str.encode('group1/M00/00/00/CgAABGGwNnmAUgOhAAAE5VdrGvg332.jpg'))
+
+    # with open('file', 'r', encoding='utf-8') as f:
+    #     file_lines = f.readlines()
+    #     for line in file_lines:
+    #         if 'group1/' in line:
+    #             url = line.strip('\n').split(' ')[-1]
+    #             try:
+    #                 client.delete_file(str.encode(url))
+    #                 logger.info(f'delete_file: {url}')
+    #             except:
+    #                 logger.debug('skip')
+
+    for anime_id, anime_info in bangumi_data.items():
+        logger.info(f'add extra info: {anime_id}')
+        anime = Anime.objects.get(title_cn=anime_info['name_cn'])
+        extra_info = get_extra_info_by_bangumi_id(anime_info['id'])
+        info = extra_info['info']
+        soup = BeautifulSoup(info)
+
+        try:
+            air_date = datetime.datetime.strptime(soup.find_all(text=re.compile(r"\d{4}年\d{1,2}月\d{1,2}日"))[0].text,
+                                                  "%Y年%m月%d日")
+            anime.air_date = air_date
+            logger.debug(f'{anime.id} air_date: {air_date}')
+        except:
+            pass
+
+        tags = []
+        for tag in [_['name'] for _ in extra_info['tags']]:
+            tags.append(Tag.objects.get_or_create(name=tag)[0])
+        anime.tags.set(tags)
+        logger.debug(f'{anime.id} tags: {tags}')
+
+        try:
+            epi_num = int(soup.find_all(text='话数: ')[0].next.text)
+            anime.epi_num = epi_num
+            logger.debug(f'{anime.id} epi_num: {epi_num}')
+        except:
+            pass
+
+        try:
+            director = soup.find_all(text='导演: ')[0].next.text
+            anime.director = Staff.objects.get_or_create(name=director)[0]
+            logger.debug(f'{anime.id} director: {director}')
+        except:
+            pass
+
+        try:
+            original = soup.find_all(text='原作: ')[0].next.text
+            anime.original = Staff.objects.get_or_create(name=original)[0]
+            logger.debug(f'{anime.id} original: {original}')
+        except:
+            pass
+
+        try:
+            script = soup.find_all(text='脚本: ')[0].parent.parent.text.replace('脚本: ', '').split('、')
+            items = []
+            for item in script:
+                items.append(Staff.objects.get_or_create(name=item)[0])
+            anime.script.set(items)
+            logger.debug(f'{anime.id} script: {script}')
+        except:
+            pass
+
+        try:
+            storyboard = soup.find_all(text='分镜: ')[0].parent.parent.text.replace('分镜: ', '').split('、')
+            items = []
+            for item in storyboard:
+                items.append(Staff.objects.get_or_create(name=item)[0])
+            anime.storyboard.set(items)
+            logger.debug(f'{anime.id} storyboard: {storyboard}')
+        except:
+            pass
+
+        try:
+            actor = soup.find_all(text='演出: ')[0].parent.parent.text.replace('演出: ', '').split('、')
+            items = []
+            for item in actor:
+                items.append(Staff.objects.get_or_create(name=item)[0])
+            anime.actor.set(items)
+            logger.debug(f'{anime.id} actor: {actor}')
+        except:
+            pass
+
+        try:
+            music = soup.find_all(text='音乐: ')[0].next.text
+            anime.music = Staff.objects.get_or_create(name=music)[0]
+            logger.debug(f'{anime.id} music: {music}')
+        except:
+            pass
+
+        try:
+            producer = soup.find_all(text='动画制作: ')[0].next.text
+            anime.producer = Staff.objects.get_or_create(name=producer)[0]
+            logger.debug(f'{anime.id} producer: {producer}')
+        except:
+            pass
+
+        try:
+            website = soup.find_all(text='官方网站: ')[0].next.text
+            anime.website = website
+            logger.debug(f'{anime.id} website: {website}')
+        except:
+            pass
+
+        anime.country = '日本'
+
+        try:
+            alias = []
+            node = soup.find_all(text='别名: ')[0].parent.parent
+            while '别名' in node.text:
+                alias.append(node.text.replace('别名: ', ''))
+                node = node.next_sibling
+            items = []
+            for item in alias:
+                items.append(Staff.objects.get_or_create(name=item)[0])
+            anime.alias.set(items)
+            logger.debug(f'{anime.id} alias: {alias}')
+        except:
+            pass
+
+        cover_medium_url = anime_info['images']['common']
+        cover_medium_fdsf = client.upload_by_buffer(down_pic(cover_medium_url), file_ext_name=cover_medium_url.rsplit('.', 1)[1])
+
+        anime.cover_medium = cover_medium_fdsf['Remote file_id'].decode()
+
+        # clean
+        # client.delete_file(cover_medium_fdsf['Remote file_id'])
+        anime.save()
+        logger.success(f'{anime.id} saved')
+
