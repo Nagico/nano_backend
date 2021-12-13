@@ -377,6 +377,11 @@ SIMPLEUI_CONFIG = {
             'icon': 'fas fa-server',
             'models': [
                 {
+                    'name': 'Reco 推荐',
+                    'icon': 'fas fa-home',
+                    'url': 'recommendation/recommendation/'
+                },
+                {
                     'name': 'Anime 作品',
                     'icon': 'fas fa-video',
                     'url': 'animes/anime/'
@@ -390,7 +395,7 @@ SIMPLEUI_CONFIG = {
                     'name': 'Photo 照片',
                     'icon': 'fas fa-camera',
                     'url': 'photos/photo/'
-                }
+                },
             ],
         },
         {
