@@ -1,8 +1,8 @@
 import logging
 from django.conf import settings
 from drf_spectacular.utils import extend_schema
-from rest_framework import serializers
-from rest_framework.exceptions import NotFound
+from rest_framework import serializers, status
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.generics import CreateAPIView
 from rest_framework.mixins import DestroyModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -149,8 +149,13 @@ class RegisterView(CreateAPIView):
     serializer_class = CreateUserSerializer
 
     def post(self, request, *args, **kwargs):
-        logger.info(f'[user/register] create user {request.data}')  # 记录日志
-        return super().post(request, *args, **kwargs)
+        try:
+            logger.info(f'[user/register] create user {request.data}')  # 记录日志
+            return super().post(request, *args, **kwargs)
+        except ValidationError as e:
+            for k, v in e.detail.items():
+                return Response({'detail': v[0]}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class UsernameCountView(APIView):
