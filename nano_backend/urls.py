@@ -17,6 +17,7 @@ urlpatterns = [
     path('anime/', include('animes.urls')),  # 番剧
     path('place/', include('places.urls')),  # 地点
     path('photo/', include('photos.urls')),  # 照片
+    path('recommendation/', include('recommendation.urls')),  # 推荐
 
     url(r'^media/(?P<path>.*)', serve, {'document_root': settings.MEDIA_ROOT}),  # 媒体文件
 

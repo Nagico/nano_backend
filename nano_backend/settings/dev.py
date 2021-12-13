@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'photos',  # 照片
     'staffs',  # staff
     'tags',  # 标签
+    'recommendation',  # 推荐
 ]
 
 MIDDLEWARE = [
