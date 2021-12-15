@@ -64,6 +64,28 @@ class AnimeViewSet(ModelViewSet):
             return AnimeInfoSerializer(*args, **kwargs)
         return super().get_serializer(*args, **kwargs)
 
+    def list(self, request, *args, **kwargs):
+        """
+        重写list 添加搜索选项
+        """
+        search_key = request.query_params.get('search', '')
+        if search_key:
+            queryset = self.filter_queryset(self.get_queryset().filter(
+                Q(title__icontains=search_key) | Q(title_cn__icontains=search_key) | Q(description__icontains=search_key) |
+                Q(tags__name__icontains=search_key) | Q(director__name__icontains=search_key) | Q(original__name__icontains=search_key) |
+                Q(script__name__icontains=search_key) | Q(storyboard__name__icontains=search_key) | Q(actor__name__icontains=search_key) |
+                Q(music__name__icontains=search_key) | Q(producer__name__icontains=search_key)))
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
     def create(self, request, *args, **kwargs):
         """
         创建动画
