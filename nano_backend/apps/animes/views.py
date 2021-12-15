@@ -71,7 +71,7 @@ class AnimeViewSet(ModelViewSet):
         search_key = request.query_params.get('search', '')
         if search_key:
             queryset = self.filter_queryset(self.get_queryset().filter(
-                Q(title__icontains=search_key) | Q(title_cn__icontains=search_key) | Q(alias__icontains=search_key)))
+                Q(title__icontains=search_key) | Q(title_cn__icontains=search_key) | Q(alias__title__icontains=search_key)))
         else:
             queryset = self.filter_queryset(self.get_queryset())
 
