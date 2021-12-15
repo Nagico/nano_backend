@@ -431,16 +431,18 @@ if __name__ == "__main__":
     #     logger.info(f'len: {len(id_list)}')
     #     with open('id.json', 'w', encoding='utf-8') as f:
     #         json.dump(id_list, f)
-    with open('id.json', 'r', encoding='utf-8') as f:
-        id_list = json.load(f)
+    add_by_bangumi_id(54433)
 
-    with ThreadPoolExecutor(max_workers=20) as t:
-        obj_list = []
-        for item in id_list:
-            obj = t.submit(add_by_bangumi_id, item)
-            obj_list.append(obj)
-
-        for future in as_completed(obj_list):
-            data = future.result()
-            print(f"main: {data}")
+    # with open('id.json', 'r', encoding='utf-8') as f:
+    #     id_list = json.load(f)
+    #
+    # with ThreadPoolExecutor(max_workers=20) as t:
+    #     obj_list = []
+    #     for item in id_list:
+    #         obj = t.submit(add_by_bangumi_id, item)
+    #         obj_list.append(obj)
+    #
+    #     for future in as_completed(obj_list):
+    #         data = future.result()
+    #         print(f"main: {data}")
 
