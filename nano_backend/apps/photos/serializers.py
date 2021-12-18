@@ -1,5 +1,7 @@
+from django.db.models import Q
 from rest_framework.serializers import ModelSerializer
 
+from nano_backend.utils.choices import ImageTypeChoice
 from nano_backend.utils.serializers import LimitedListSerializer
 from .models import Photo
 
@@ -35,3 +37,8 @@ class PhotoLimitSerializer(ModelSerializer):
         list_serializer_class = LimitedListSerializer
         model = Photo
         fields = ['id', 'name', 'image']
+
+    def get_queryset(self):
+        return Photo.objects.filter(type=ImageTypeChoice.REAL)
+
+
