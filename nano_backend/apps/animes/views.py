@@ -13,7 +13,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 
 from nano_backend.utils.auth import check_permission
-from users.models import UserAnimeCollection
+from users.models import UserAnimeCollection, UserAnimeHistory
 from .filters import AnimeFilter
 from .models import Anime
 from .serializers import AnimeDetailSerializer, AnimeInfoSerializer
@@ -170,3 +170,35 @@ class AnimeViewSet(ModelViewSet):
         elif request.method == 'GET':
             is_collected = UserAnimeCollection.objects.filter(user=user, anime=anime).exists()
             return Response({'is_collected': is_collected}, status=status.HTTP_200_OK)
+
+    @action(methods=['get', 'post', 'delete'], detail=True)
+    def history(self, request, pk=None):
+        """
+        anime 历史增删
+        """
+        anime = self.get_object()  # 传入pk的对应anime
+        user = request.user  # 获取当前登录用户
+        if not user.is_authenticated:  # 当前用户未登录
+            raise AuthenticationFailed('用户未登录', code='not_authenticated')
+
+        # 添加
+        if request.method == 'POST':
+            if UserAnimeHistory.objects.filter(user=user, anime=anime).exists():
+                UserAnimeHistory.objects.get(user=user, anime=anime).delete()
+
+            user_anime_history = UserAnimeHistory(user=user, anime=anime)  # 联合表添加
+            user_anime_history.save()
+            logger.info(f'[anime/{pk}/] user {user} add history')
+            return Response(status=status.HTTP_201_CREATED)
+        # 删除
+        elif request.method == 'DELETE':
+            if not UserAnimeHistory.objects.filter(user=user, anime=anime).exists():
+                raise PermissionDenied('无历史', code='not_history')
+
+            user_anime_history = UserAnimeHistory.objects.get(user=user, anime=anime)  # 联合表删除
+            user_anime_history.delete()
+            logger.info(f'[anime/{pk}/] user {user} delete anime from history')
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        # 查询
+        elif request.method == 'GET':
+            return Response({}, status=status.HTTP_200_OK)
