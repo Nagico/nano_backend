@@ -18,6 +18,9 @@ urlpatterns = [
     path('anime/', views.UserAnimeCollectionViewSet.as_view({  # 本用户anime收藏
         'get': 'list'
     }), name='user'),
+    path('history/', views.UserAnimeHistoryViewSet.as_view({  # 本用户历史记录
+        'get': 'list'
+    }), name='user'),
     path('place/', views.UserPlaceCollectionViewSet.as_view({  # 本用户place收藏
         'get': 'list'
     }), name='user'),

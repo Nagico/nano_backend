@@ -9,7 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from animes.serializers import AnimeInfoSerializer
 from places.serializers import PlaceInfoSerializer
-from .models import User, UserAnimeCollection, UserPlaceCollection
+from .models import User, UserAnimeCollection, UserPlaceCollection, UserAnimeHistory
 from nano_backend.utils.crypto import Crypto
 
 
@@ -78,6 +78,17 @@ class UserAnimeCollectionSerializer(serializers.ModelSerializer):
         fields = ['anime']
 
 
+class UserAnimeHistorySerializer(serializers.ModelSerializer):
+    """
+    用户历史序列化器
+    """
+    anime = AnimeInfoSerializer(read_only=True)
+
+    class Meta:
+        model = UserAnimeHistory
+        fields = ['anime']
+
+
 class UserPlaceCollectionSerializer(serializers.ModelSerializer):
     """
     用户收藏地点序列化器
@@ -95,7 +106,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = User
-        fields = ['id', 'username', 'avatar']
+        fields = ['id', 'nickname', 'avatar']
 
 
 class LoginTokenObtainPairSerializer(TokenObtainPairSerializer):

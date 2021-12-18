@@ -11,9 +11,9 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import User, UserAnimeCollection, UserPlaceCollection
+from .models import User, UserAnimeCollection, UserPlaceCollection, UserAnimeHistory
 from .serializers import UserSerializer, LoginTokenObtainPairSerializer, CreateUserSerializer, UserInfoSerializer, \
-    UserAnimeCollectionSerializer, UserPlaceCollectionSerializer
+    UserAnimeCollectionSerializer, UserPlaceCollectionSerializer, UserAnimeHistorySerializer
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +93,27 @@ class UserAnimeCollectionViewSet(GenericViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         logger.info(f'[user/anime] get user {request.user} anime collection list: {serializer.data}')
+        return Response(serializer.data)
+
+
+class UserAnimeHistoryViewSet(GenericViewSet):
+    """
+    用户历史视图
+    """
+    queryset = UserAnimeHistory.objects.all()
+    serializer_class = UserAnimeHistorySerializer
+    permission_classes = [IsAuthenticated]  # 仅允许登录用户操作
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset().filter(user=request.user)  # 获取当前登录用户收藏列表
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        logger.info(f'[user/anime] get user {request.user} history list: {serializer.data}')
         return Response(serializer.data)
 
 
