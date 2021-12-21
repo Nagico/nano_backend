@@ -29,16 +29,21 @@ class PhotoInfoSerializer(ModelSerializer):
         fields = ['id', 'name', 'image']
 
 
+class RealPhotoLimitedListSerializer(LimitedListSerializer):
+    """
+    用于查询结果中的图片信息
+    """
+    def filter_data(self, data):
+        return data.filter(type=ImageTypeChoice.REAL).filter(Q(is_approved=True) | Q(create_user=self.context['request'].user.id))[:20]
+
+
 class PhotoLimitSerializer(ModelSerializer):
     """
     photo 带约束序列化器
     """
     class Meta:
-        list_serializer_class = LimitedListSerializer
+        list_serializer_class = RealPhotoLimitedListSerializer
         model = Photo
         fields = ['id', 'name', 'image']
-
-    def get_queryset(self):
-        return Photo.objects.filter(type=ImageTypeChoice.REAL)
 
 
