@@ -400,49 +400,14 @@ if __name__ == "__main__":
     with open("bangumi_data.json", "r", encoding='utf-8') as f:
         bangumi_data = json.load(f)
 
-    # bangumi_data['4849'] = get_banmugi_info_by_id(891)
+    bangumi_data['4849'] = get_banmugi_info_by_id(891)
     # client.delete_file(str.encode('group1/M00/00/00/CgAABGGwNniAP95UAACmUZUO3nA227.jpg'))
     # client.delete_file(str.encode('group1/M00/00/00/CgAABGGwNnmAUgOhAAAE5VdrGvg332.jpg'))
 
-    # with open('file', 'r', encoding='utf-8') as f:
-    #     file_lines = f.readlines()
-    #     for line in file_lines:
-    #         if 'group1/' in line:
-    #             url = line.strip('\n').split(' ')[-1]
-    #             try:
-    #                 client.delete_file(str.encode(url))
-    #                 logger.info(f'delete_file: {url}')
-    #             except:
-    #                 logger.debug('skip')
-    url = 'https://bgm.tv/anime/tag/%E9%9D%92%E6%98%A5?page='
-    # url = 'https://bgm.tv/anime/tag/%E4%BA%AC%E9%98%BF%E5%B0%BC?page='
-    # for i in range(8, 20):
-    #     with open('id.json', 'r', encoding='utf-8') as f:
-    #         id_list = json.load(f)
-    #     url_i = url + str(i)
-    #     logger.info(f'url: {url_i}')
-    #     scraper = cfscrape.create_scraper()
-    #     response = scraper.get(url_i)
-    #     data = response.text
-    #     soup = BeautifulSoup(data, 'html.parser')
-    #     l = [eval(_['id'].replace('item_', '')) for _ in soup.find_all('li', class_='item odd clearit')]
-    #     id_list = id_list + l
-    #     id_list = list(set(id_list))
-    #     logger.info(f'len: {len(id_list)}')
-    #     with open('id.json', 'w', encoding='utf-8') as f:
-    #         json.dump(id_list, f)
-    add_by_bangumi_id(54433)
-
-    # with open('id.json', 'r', encoding='utf-8') as f:
-    #     id_list = json.load(f)
-    #
-    # with ThreadPoolExecutor(max_workers=20) as t:
-    #     obj_list = []
-    #     for item in id_list:
-    #         obj = t.submit(add_by_bangumi_id, item)
-    #         obj_list.append(obj)
-    #
-    #     for future in as_completed(obj_list):
-    #         data = future.result()
-    #         print(f"main: {data}")
+    for id in anime_data:
+        cname = bangumi_data[id]['name_cn']
+        anime = Anime.objects.get(title_cn=cname)
+        logger.info(f'{anime.title}')
+        anime.description = anime_data[id]['data']['movie']['overview']
+        anime.save()
 
