@@ -319,9 +319,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
 
     # 分页
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20,  # 默认每页数目
-    'PAGE_SIZE_QUERY_PARAM': 'page_size',  # 控制每页数目的参数
+    'DEFAULT_PAGINATION_CLASS': 'nano_backend.utils.pagination.GlobalPageNumberPagination',
 }
 
 # CORS
