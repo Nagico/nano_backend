@@ -8,4 +8,5 @@ class GlobalPageNumberPagination(PageNumberPagination):
     def __init__(self):
         super(GlobalPageNumberPagination, self).__init__()
         self.page_size_query_param = 'page_size'
-        self.max_page_size = 20
+        self.page_size = 20
+        self.max_page_size = 200
