@@ -357,7 +357,7 @@ SPECTACULAR_SETTINGS = {
 DEFAULT_FILE_STORAGE = 'nano_backend.utils.fastdfs.fdfs_storage.FastDFSStorage'
 
 # FastDFS
-FDFS_URL = f'http://{MEDIA_HOST}/'
+FDFS_URL = f'https://{MEDIA_HOST}/'
 FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
 
 # Avatar
