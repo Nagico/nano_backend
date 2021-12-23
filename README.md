@@ -26,7 +26,7 @@ _✨ Author: NagisaCo ✨_
 
 > 前端项目仓库：[Saltro/nano](https://github.com/Saltro/nano)
 
-Nano 网站由团队共同开发，用于完成 *腾讯文档前端* 课程大作业。
+Nano 网站由团队共同开发，用于完成前端课程大作业。
 
 ### Nano_backend
 
