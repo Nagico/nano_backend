@@ -4,7 +4,7 @@ services:
   ### Nginx container #########################################
   nginx:
     image: nginx:1.17-alpine  #定义nginx使用的镜像，直接从docker hub上获取
-    container_name: nano_neginx
+    container_name: nano_nginx
     ports:
       - "8081:${NANO_HTTP_PORT}"
     volumes: #nginx数据持久化配置---包括项目、项目nginx配置文件和nginx日志文件
