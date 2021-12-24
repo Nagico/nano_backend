@@ -25,5 +25,6 @@ class RecommendationViewSet(ModelViewSet):
 
     ordering_fields = ['score', 'create_time', 'update_time', 'id']  # 排序字段
     ordering = ['-score']  # 默认排序字段
+    filter_fields = ['type']
 
     permission_classes = [AllowAny]  # 允许任何人
