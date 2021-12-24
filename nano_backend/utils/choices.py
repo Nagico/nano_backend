@@ -19,3 +19,12 @@ class ImageTypeChoice(models.IntegerChoices):
     REAL = 0, '实景'
     VIRTUAL = 1, '番剧'
     OTHER = 2, '其他'
+
+
+class RecommendationTypeChoice(models.IntegerChoices):
+    """
+    推荐类型，用于Recommendation表中的type字段
+    """
+    DEFAULT = 0, '默认'
+    CAROUSEL = 1, '轮播图'
+    TABLE = 2, '表格'
