@@ -40,7 +40,7 @@ class Anime(models.Model):
     update_time = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
     def __str__(self):
-        return self.title
+        return self.title_cn
 
     class Meta:
         app_label = 'animes'

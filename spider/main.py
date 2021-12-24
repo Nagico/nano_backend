@@ -404,10 +404,5 @@ if __name__ == "__main__":
     # client.delete_file(str.encode('group1/M00/00/00/CgAABGGwNniAP95UAACmUZUO3nA227.jpg'))
     # client.delete_file(str.encode('group1/M00/00/00/CgAABGGwNnmAUgOhAAAE5VdrGvg332.jpg'))
 
-    for id in anime_data:
-        cname = bangumi_data[id]['name_cn']
-        anime = Anime.objects.get(title_cn=cname)
-        logger.info(f'{anime.title}')
-        anime.description = anime_data[id]['data']['movie']['overview']
-        anime.save()
+    add_by_bangumi_id(219200)
 
