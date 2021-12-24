@@ -1,5 +1,7 @@
 from django.db import models
 
+from nano_backend.utils.choices import RecommendationTypeChoice
+
 
 class Recommendation(models.Model):
     """
@@ -11,6 +13,8 @@ class Recommendation(models.Model):
     description = models.CharField(max_length=200, verbose_name='描述')
     score = models.IntegerField(default=0, verbose_name='评分')
     tags = models.ManyToManyField('tags.Tag', verbose_name='标签')
+    type = models.IntegerField(choices=RecommendationTypeChoice.choices, default=RecommendationTypeChoice.DEFAULT,
+                               verbose_name='推荐条目类型')
 
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     update_time = models.DateTimeField(auto_now=True, verbose_name='更新时间')
