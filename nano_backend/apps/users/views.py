@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from nano_backend.utils.auth import JWTAuthentication
 from .models import User, UserAnimeCollection, UserPlaceCollection, UserAnimeHistory
 from .serializers import UserSerializer, LoginTokenObtainPairSerializer, CreateUserSerializer, UserInfoSerializer, \
     UserAnimeCollectionSerializer, UserPlaceCollectionSerializer, UserAnimeHistorySerializer
@@ -27,6 +28,7 @@ class UserDetailViewSet(RetrieveModelMixin,
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]  # 仅登录用户可访问个人信息
 
     def validate_avatar(self, value):

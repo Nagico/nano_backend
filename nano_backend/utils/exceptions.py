@@ -9,6 +9,10 @@ from rest_framework import status
 logger = logging.getLogger('django')
 
 
+class EmptyPermissionDenied(Exception):
+    pass
+
+
 def exception_handler(exc, context):
     """
     自定义异常处理
@@ -21,6 +25,9 @@ def exception_handler(exc, context):
 
     if response is None:
         view = context['view']
+        if isinstance(exc, EmptyPermissionDenied):
+            # 没有权限 返回空
+            response = Response({}, status=status.HTTP_403_FORBIDDEN)
         if isinstance(exc, DatabaseError) or isinstance(exc, RedisError):
             # 数据库异常
             logger.error('[%s] %s' % (view, exc))
