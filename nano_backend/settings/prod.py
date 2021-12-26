@@ -329,7 +329,9 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:8080',
     'https://127.0.0.1:8080',
     'http://vps.coyangjr.cn:12345',
-    'https://localhost:8080'
+    'https://localhost:8080',
+    'http://nano.saltroping.com',
+    'https://nano.saltroping.com',
 )
 
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
