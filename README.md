@@ -7,6 +7,14 @@ _✨ Author: NagisaCo ✨_
 </div>
 
 <p align="center">
+  <a href="https://github.com/Saltro/nano">
+    <img src="https://img.shields.io/badge/Github-nano-brightgreen?logo=github" alt="frontend_repository">
+  </a>
+  <a href="https://github.com/NagisaCo/nano_backend">
+    <img src="https://img.shields.io/badge/Github-nano_backend-brightgreen?logo=github" alt="backend_repository">
+  </a>
+  <br />
+  <img src="https://img.shields.io/github/workflow/status/NagisaCo/nano_backend/Nano-backendend%20CI" alt="CI">
   <a href="stargazers">
     <img src="https://img.shields.io/github/stars/NagisaCo/nano_backend?color=yellow&label=Github%20Stars" alt="star">
   </a>
@@ -20,7 +28,7 @@ _✨ Author: NagisaCo ✨_
 
 本项目主要使用 Django 与 drf 框架，为 Nano 提供后端服务。
 
-### NANO-「圣地巡礼」
+### NANO -「圣地巡礼」
 
 展示二次元圣地巡礼相关旅游资讯的内容型平台。
 
