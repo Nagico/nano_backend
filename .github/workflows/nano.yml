@@ -24,5 +24,6 @@ jobs:
           script: |
             cd ~/nano_backend
             git pull
+            python3 manage.py migrate
             docker-compose up -d
             docker-compose restart
