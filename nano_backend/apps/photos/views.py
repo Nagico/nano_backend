@@ -1,14 +1,18 @@
 import logging
+from django.conf import settings
 
 from django.db.models import Q
+from django.views.decorators.cache import cache_page
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import AuthenticationFailed, PermissionDenied
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from animes.models import Anime
 from nano_backend.utils.auth import check_permission
+from nano_backend.utils.mixins.views import CacheListModelMixin, CacheRetrieveModelMixin
 from places.models import Place
 from users.models import User
 from .models import Photo
@@ -16,8 +20,10 @@ from .serializers import PhotoDetailSerializer
 
 logger = logging.getLogger(__name__)
 
+CACHE_TTL = getattr(settings, 'CACHE_TTL', 60 * 60 * 1)
 
-class PhotoViewSet(ModelViewSet):
+
+class PhotoViewSet(CacheListModelMixin, CacheRetrieveModelMixin, ModelViewSet):
     queryset = Photo.objects.filter(is_public=True, is_approved=True)
     filter_backends = [OrderingFilter, DjangoFilterBackend]  # 排序 过滤
     serializer_class = PhotoDetailSerializer

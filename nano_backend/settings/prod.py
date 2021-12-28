@@ -406,3 +406,5 @@ SIMPLEUI_CONFIG = {
         }
     ]
 }
+
+CACHE_TTL = 60 * 60 * 12  # 缓存失效时间

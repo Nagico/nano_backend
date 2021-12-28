@@ -1,6 +1,8 @@
 import logging
 
+from django.conf import settings
 from django.db.models import Q
+from django.views.decorators.cache import cache_page
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.decorators import action
@@ -13,6 +15,7 @@ from rest_framework_simplejwt.exceptions import AuthenticationFailed
 
 from animes.models import Anime
 from nano_backend.utils.auth import check_permission
+from nano_backend.utils.mixins.views import CacheListModelMixin, CacheRetrieveModelMixin
 from users.models import User, UserPlaceCollection
 from .filters import PlaceFilter
 from .models import Place
@@ -20,8 +23,10 @@ from .serializers import PlaceDetailsSerializer
 
 logger = logging.getLogger(__name__)
 
+CACHE_TTL = getattr(settings, 'CACHE_TTL', 60 * 60 * 1)
 
-class PlaceViewSet(ModelViewSet):
+
+class PlaceViewSet(CacheListModelMixin, CacheRetrieveModelMixin, ModelViewSet):
     queryset = Place.objects.filter(is_public=True, is_approved=True)
     serializer_class = PlaceDetailsSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]  # 排序 过滤

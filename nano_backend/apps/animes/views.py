@@ -1,5 +1,8 @@
 import logging
 
+from django.conf import settings
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import status
@@ -13,6 +16,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 
 from nano_backend.utils.auth import check_permission
+from nano_backend.utils.mixins.views import CacheListModelMixin, CacheRetrieveModelMixin
 from users.models import UserAnimeCollection, UserAnimeHistory
 from .filters import AnimeFilter
 from .models import Anime
@@ -20,8 +24,10 @@ from .serializers import AnimeDetailSerializer, AnimeInfoSerializer
 
 logger = logging.getLogger(__name__)
 
+CACHE_TTL = getattr(settings, 'CACHE_TTL', 60 * 60 * 1)
 
-class AnimeViewSet(ModelViewSet):
+
+class AnimeViewSet(CacheListModelMixin, CacheRetrieveModelMixin, ModelViewSet):
     """
     Anime ViewSet
     """
@@ -44,6 +50,7 @@ class AnimeViewSet(ModelViewSet):
             return AnimeInfoSerializer(*args, **kwargs)
         return super().get_serializer(*args, **kwargs)
 
+    @method_decorator(cache_page(CACHE_TTL))
     def list(self, request, *args, **kwargs):
         """
         重写list 添加搜索选项
