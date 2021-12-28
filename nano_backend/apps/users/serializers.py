@@ -148,7 +148,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'password2', 'mobile', 'sms_code', 'allow', 'refresh',
+        fields = ['id', 'username', 'nickname', 'password', 'password2', 'mobile', 'sms_code', 'allow', 'refresh',
                   'access']  # 序列化器内容
         extra_kwargs = {  # 简易校验字段
             'username': {
@@ -157,6 +157,14 @@ class CreateUserSerializer(serializers.ModelSerializer):
                 'error_messages': {  # 自定义校验信息
                     'min_length': '仅允许5-20个字符的用户名',
                     'max_length': '仅允许5-20个字符的用户名',
+                }
+            },
+            'nickname': {
+                'min_length': 5,
+                'max_length': 20,
+                'error_messages': {  # 自定义校验信息
+                    'min_length': '仅允许5-20个字符的昵称',
+                    'max_length': '仅允许5-20个字符的昵称',
                 }
             }
         }
