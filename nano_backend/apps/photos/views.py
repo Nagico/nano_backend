@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class PhotoViewSet(ModelViewSet):
+    queryset = Photo.objects.filter(is_public=True, is_approved=True)
     filter_backends = [OrderingFilter, DjangoFilterBackend]  # 排序 过滤
     serializer_class = PhotoDetailSerializer
 
@@ -26,18 +27,6 @@ class PhotoViewSet(ModelViewSet):
     filter_fields = ['id', 'is_approved', 'is_public', 'anime_id', 'place_id', 'create_user']  # 过滤
 
     permission_classes = [AllowAny]  # 允许任何人
-
-    def get_queryset(self):
-        """
-        动态获取查询集，根据登录情况返回
-        :return:
-        """
-        user = self.request.user  # 获取当前用户
-
-        if user.is_authenticated:  # 用户已登录
-            return Photo.objects.filter(Q(create_user=user) | Q(is_public=True))
-        else:  # 用户未登录
-            return Photo.objects.filter(is_public=True, is_approved=True)
 
     def create(self, request, *args, **kwargs):
         """

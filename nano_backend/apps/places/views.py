@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class PlaceViewSet(ModelViewSet):
+    queryset = Place.objects.filter(is_public=True, is_approved=True)
     serializer_class = PlaceDetailsSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]  # 排序 过滤
 
@@ -54,18 +55,6 @@ class PlaceViewSet(ModelViewSet):
 
         logger.info(f'[place/{kwargs["pk"]}/] user {request.user} delete place')
         return super().destroy(request, *args, **kwargs)
-
-    def get_queryset(self):
-        """
-        动态获取查询集，根据登录情况返回
-        :return:
-        """
-        user = self.request.user  # 获取当前用户
-
-        if user.is_authenticated:  # 用户已登录
-            return Place.objects.filter(Q(create_user=user) | Q(is_public=True))
-        else:  # 用户未登录
-            return Place.objects.filter(is_public=True, is_approved=True)
 
     def update_contributor(self):
         """

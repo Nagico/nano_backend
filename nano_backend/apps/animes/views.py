@@ -21,19 +21,11 @@ from .serializers import AnimeDetailSerializer, AnimeInfoSerializer
 logger = logging.getLogger(__name__)
 
 
-@extend_schema_view(
-    list=extend_schema(
-        description='分页获取动画列表',
-        tags=['Anime'],
-        responses={
-            status.HTTP_200_OK: AnimeDetailSerializer(many=True),
-        },
-    ),
-)
 class AnimeViewSet(ModelViewSet):
     """
     Anime ViewSet
     """
+    queryset = Anime.objects.filter(is_public=True, is_approved=True)
     serializer_class = AnimeDetailSerializer
     filter_backends = [OrderingFilter, DjangoFilterBackend]  # 排序 过滤
 
@@ -42,18 +34,6 @@ class AnimeViewSet(ModelViewSet):
     filterset_class = AnimeFilter  # 自定义过滤器
 
     permission_classes = [AllowAny]  # 允许任何人
-
-    def get_queryset(self):
-        """
-        动态获取查询集，根据登录情况返回
-        :return:
-        """
-        user = self.request.user  # 获取当前用户
-
-        if user.is_authenticated:  # 用户已登录
-            return Anime.objects.filter(Q(create_user=user) | Q(is_public=True))
-        else:  # 用户未登录
-            return Anime.objects.filter(is_public=True, is_approved=True)
 
     def get_serializer(self, *args, **kwargs):
         """
