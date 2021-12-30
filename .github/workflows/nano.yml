@@ -24,6 +24,9 @@ jobs:
           script: |
             cd ~/nano_backend
             git pull
+            python3 -m pip install -r requirements.txt
             python3 manage.py migrate
+            docker-compose stop
+            docker-compose rm -f
+            docker rmi nano:custom
             docker-compose up -d
-            docker-compose restart
