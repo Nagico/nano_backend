@@ -14,3 +14,4 @@ django-simpleui
 uwsgi
 django-cors-headers
 mysqlclient
+sentry-sdk==1.5.1

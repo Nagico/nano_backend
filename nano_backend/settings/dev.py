@@ -15,6 +15,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import sys
 import datetime
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 
 MYSQL_HOST = os.environ.get('MYSQL_HOST', '192.168.239.128')
 REDIS_HOST = os.environ.get('REDIS_HOST', '192.168.239.128')
@@ -36,6 +39,23 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '*',
 ]
+
+# Sentry配置
+sentry_sdk.init(
+    dsn="https://e137c174a71d4a2385821e3d7c398add@o1102605.ingest.sentry.io/6129008",
+    integrations=[DjangoIntegration(), RedisIntegration()],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True,
+
+    environment="dev"
+)
 
 # Application definition
 
