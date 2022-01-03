@@ -42,7 +42,7 @@ ALLOWED_HOSTS = [
 
 # Sentry配置
 sentry_sdk.init(
-    dsn="https://e137c174a71d4a2385821e3d7c398add@o1102605.ingest.sentry.io/6129008",
+    dsn="https://92e69ec73dd34e56968d1380d7e57c95@o1104801.ingest.sentry.io/6132634",
     integrations=[DjangoIntegration(), RedisIntegration()],
 
     # Set traces_sample_rate to 1.0 to capture 100%
